@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DigiTech Pro - Plataforma Educativa Interactiva</title>
+    <title>DigiTech - Plataforma Educativa Interactiva</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
@@ -1452,7 +1452,7 @@
     <nav class="sidebar" id="sidebar">
         <div class="logo">
             <div class="logo-icon">🎓</div>
-            <div class="logo-text">DigiTech Pro</div>
+            <div class="logo-text">DigiTech</div>
             <button class="theme-btn" onclick="toggleTheme()" title="Cambiar tema">
                 ☀️
             </button>
@@ -1490,10 +1490,6 @@
             <a class="nav-item" onclick="showTools()">
                 <span class="nav-icon">🧮</span>
                 <div class="nav-text">Herramientas</div>
-            </a>
-            <a class="nav-item" onclick="showNotes()">
-                <span class="nav-icon">📝</span>
-                <div class="nav-text">Mis Notas</div>
             </a>
         </div>
 
@@ -1558,9 +1554,6 @@
                     <button class="action-btn" onclick="showTools()">
                         🧮 Herramientas
                     </button>
-                    <button class="action-btn" onclick="showNotes()">
-                        📝 Notas
-                    </button>
                 </div>
             </div>
 
@@ -1590,11 +1583,6 @@
                     <div class="feature-icon icon-cyan">📖</div>
                     <h3 class="feature-title">Contenido Completo</h3>
                     <p class="feature-desc">6 temas con teoría, ejemplos y ejercicios prácticos</p>
-                </div>
-                <div class="feature-card" onclick="showNotes()">
-                    <div class="feature-icon icon-green">📝</div>
-                    <h3 class="feature-title">Toma Notas</h3>
-                    <p class="feature-desc">Sistema de notas personales guardado en tu navegador</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon icon-orange">📊</div>
@@ -1874,51 +1862,6 @@
             </div>
         </div>
 
-        <!-- Notes View -->
-        <div id="notes-view" class="content-detail">
-            <div class="breadcrumb">
-                <a href="#" onclick="showHome()">Inicio</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Mis Notas</span>
-            </div>
-
-            <div class="content-header">
-                <h1>📝 Mis Notas Personales</h1>
-                <p class="description">Toma apuntes mientras estudias. Tus notas se guardan automáticamente.</p>
-            </div>
-
-            <div class="notes-container">
-                <h3 style="margin-bottom: 20px;">✍️ Nueva Nota</h3>
-                <div class="note-editor">
-                    <select id="note-topic" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--light-text); margin-bottom: 12px; font-size: 14px;">
-                        <option value="">Seleccionar tema...</option>
-                        <option value="energia">⚡ Energía Eléctrica</option>
-                        <option value="leyes">📚 Leyes Básicas</option>
-                        <option value="circuitos">🔌 Análisis de Circuitos</option>
-                        <option value="binario">💻 Sistema Binario</option>
-                        <option value="tablas">📊 Tablas de Verdad</option>
-                        <option value="karnaugh">🗺️ Mapas de Karnaugh</option>
-                        <option value="general">📌 General</option>
-                    </select>
-                    <textarea class="note-input" id="note-input" placeholder="Escribe tus apuntes aquí..."></textarea>
-                    <div class="note-actions">
-                        <button class="calc-button" onclick="saveNote()">💾 Guardar Nota</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="notes-container">
-                <h3 style="margin-bottom: 20px;">📚 Notas Guardadas</h3>
-                <div class="notes-list" id="notes-list">
-                    <div class="empty-state">
-                        <div class="empty-icon">📝</div>
-                        <div class="empty-text">No hay notas guardadas</div>
-                        <div class="empty-subtext">Comienza a tomar apuntes mientras estudias</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Example Content View (Energia) -->
         <div id="energia-view" class="content-detail">
             <div class="breadcrumb">
@@ -1937,9 +1880,6 @@
                 <div class="content-actions">
                     <button class="content-btn" onclick="toggleComplete('energia')">
                         <span id="complete-btn-energia">✓ Marcar como Completado</span>
-                    </button>
-                    <button class="content-btn" onclick="showNotes()">
-                        📝 Tomar Notas
                     </button>
                 </div>
             </div>
@@ -2334,84 +2274,6 @@
             document.getElementById('quiz-results').style.display = 'none';
             loadQuizQuestion();
         }
-
-        // Notes Management
-        function saveNote() {
-            const topic = document.getElementById('note-topic').value;
-            const content = document.getElementById('note-input').value.trim();
-
-            if (!topic) {
-                alert('Por favor selecciona un tema');
-                return;
-            }
-
-            if (!content) {
-                alert('Por favor escribe algo en la nota');
-                return;
-            }
-
-            const note = {
-                id: Date.now(),
-                topic: topic,
-                content: content,
-                date: new Date().toLocaleDateString('es-ES')
-            };
-
-            notes.unshift(note);
-            localStorage.setItem('notes', JSON.stringify(notes));
-
-            document.getElementById('note-input').value = '';
-            document.getElementById('note-topic').value = '';
-
-            loadNotes();
-        }
-
-        function loadNotes() {
-            const notesList = document.getElementById('notes-list');
-
-            if (notes.length === 0) {
-                notesList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📝</div>
-                        <div class="empty-text">No hay notas guardadas</div>
-                        <div class="empty-subtext">Comienza a tomar apuntes mientras estudias</div>
-                    </div>
-                `;
-                return;
-            }
-
-            const topicNames = {
-                'energia': '⚡ Energía Eléctrica',
-                'leyes': '📚 Leyes Básicas',
-                'circuitos': '🔌 Análisis de Circuitos',
-                'binario': '💻 Sistema Binario',
-                'tablas': '📊 Tablas de Verdad',
-                'karnaugh': '🗺️ Mapas de Karnaugh',
-                'general': '📌 General'
-            };
-
-            notesList.innerHTML = notes.map(note => `
-                <div class="note-item">
-                    <div class="note-header">
-                        <span class="note-topic">${topicNames[note.topic] || note.topic}</span>
-                        <div>
-                            <span class="note-date">${note.date}</span>
-                            <button class="note-delete" onclick="deleteNote(${note.id})">🗑️ Eliminar</button>
-                        </div>
-                    </div>
-                    <div class="note-content">${note.content}</div>
-                </div>
-            `).join('');
-        }
-
-        function deleteNote(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar esta nota?')) {
-                notes = notes.filter(note => note.id !== id);
-                localStorage.setItem('notes', JSON.stringify(notes));
-                loadNotes();
-            }
-        }
-
         // Search Functionality
         document.getElementById('sidebarSearch').addEventListener('input', function (e) {
             const searchTerm = e.target.value.toLowerCase();
