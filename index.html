@@ -96,6 +96,10 @@
             font-size: 22px;
         }
 
+        .sidebar.collapsed .logo img {
+            display: none;
+        }
+
         /* Botón Toggle */
         .toggle-btn {
             width: 28px;
@@ -967,9 +971,8 @@
     <!-- Sidebar Navigation -->
     <nav class="sidebar" id="sidebar">
         <div class="logo">
-                <img src="digi.png" alt="Logo  Digitech">
-                <div class="nav-text">
-                    Digitech
+            <img src="digi.png" alt="Logo  Digitech">
+            <div class="nav-text">Digitech</div>
             <button class="toggle-btn" onclick="toggleSidebar()" title="Colapsar menú">
                 ◀
             </button>
