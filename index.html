@@ -5,15 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigiTech - Plataforma Educativa de Electrónica y Sistemas Digitales</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary-blue: #0066FF;
@@ -26,6 +20,7 @@
             --success-green: #00d9a3;
             --warning-orange: #ff9500;
             --sidebar-width: 280px;
+            --sidebar-collapsed-width: 70px;
         }
 
         body {
@@ -36,162 +31,117 @@
             overflow-x: hidden;
         }
 
-        /* Scrollbar Azul */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--darker-bg); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--primary-blue), var(--accent-cyan)); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
 
-        ::-webkit-scrollbar-track {
-            background: var(--darker-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, var(--primary-blue), var(--accent-cyan));
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-cyan);
-        }
-
-        /* Sidebar Navigation */
+        /* ── SIDEBAR ── */
         .sidebar {
             position: fixed;
-            left: 0;
-            top: 0;
+            left: 0; top: 0;
             width: var(--sidebar-width);
             height: 100vh;
             background: var(--dark-bg);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            overflow-y: auto; overflow-x: hidden;
             z-index: 1000;
             transition: width 0.3s ease;
         }
 
-        /* Sidebar Colapsado */
-        .sidebar.collapsed {
-            width: 70px;
+        /* Collapsed state via body class */
+        body.sidebar-collapsed .sidebar { width: var(--sidebar-collapsed-width); }
+        body.sidebar-collapsed .main-content { margin-left: var(--sidebar-collapsed-width); }
+
+        /* Sidebar-right overrides */
+        body.sidebar-right .sidebar { left: auto; right: 0; border-right: none; border-left: 1px solid rgba(255,255,255,0.05); }
+        body.sidebar-right .main-content { margin-left: 0; margin-right: var(--sidebar-width); }
+        body.sidebar-right.sidebar-collapsed .main-content { margin-right: var(--sidebar-collapsed-width); margin-left: 0; }
+
+        /* ── LOGO ROW ── */
+        .logo {
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            white-space: nowrap;
+            overflow: hidden;
         }
 
-        .sidebar.collapsed .logo-text,
-        .sidebar.collapsed .nav-text,
-        .sidebar.collapsed .nav-label,
-        .sidebar.collapsed .nav-subtitle,
-        .sidebar.collapsed .learn-tip {
-            display: none;
-        }
-
-        .sidebar.collapsed .logo {
-            justify-content: center;
-            padding: 20px 10px;
-        }
-
-        .sidebar.collapsed .nav-item {
-            justify-content: center;
-            padding: 16px 10px;
-        }
-
-        .sidebar.collapsed .nav-icon {
-            margin: 0;
+        .logo-icon-wrap {
+            flex-shrink: 0;
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
             font-size: 22px;
         }
 
-        .sidebar.collapsed .logo img {
-            display: none;
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--light-text);
+            flex: 1;
+            overflow: hidden;
+            transition: opacity 0.2s ease, width 0.3s ease;
         }
 
-        /* Botón Toggle */
+        body.sidebar-collapsed .logo-text,
+        body.sidebar-collapsed .nav-text,
+        body.sidebar-collapsed .nav-label,
+        body.sidebar-collapsed .nav-subtitle,
+        body.sidebar-collapsed .learn-tip,
+        body.sidebar-collapsed .settings-btn { opacity: 0; width: 0; overflow: hidden; pointer-events: none; }
+
+        body.sidebar-collapsed .logo { justify-content: center; padding: 20px 0; }
+        body.sidebar-collapsed .nav-item { justify-content: center; padding: 16px 0; }
+        body.sidebar-collapsed .nav-icon { margin: 0; }
+
+        /* ── TOGGLE BUTTON ── */
         .toggle-btn {
-            width: 28px;
-            height: 28px;
+            flex-shrink: 0;
+            width: 28px; height: 28px;
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255,255,255,0.2);
             border-radius: 6px;
             color: var(--gray-text);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 12px;
             transition: all 0.3s ease;
-            margin-left: auto;
         }
+        .toggle-btn:hover { background: var(--primary-blue); border-color: var(--primary-blue); color: #fff; }
 
-        .toggle-btn:hover {
-            background: var(--primary-blue);
-            border-color: var(--primary-blue);
-            color: white;
-        }
-
-        .sidebar.collapsed .toggle-btn {
-            margin: 0;
-        }
-
-        .sidebar.collapsed+.main-content {
-            margin-left: 70px;
-        }
-
-        .logo {
-            padding: 24px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        /* ── SETTINGS BUTTON ── */
+        .settings-btn {
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            color: var(--gray-text);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
             transition: all 0.3s ease;
         }
+        .settings-btn:hover { background: var(--primary-blue); border-color: var(--primary-blue); color: #fff; transform: rotate(90deg); }
 
-        /* Icono de navegación */
-        .nav-icon {
-            font-size: 20px;
-            min-width: 24px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        /* Estilo para imagen de logo */
-        .logo img {
-            width: 64px;
-            height: 64px;
-            border-radius: 25%;
-            /* Completamente redondo */
-            object-fit: cover;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .logo img:hover {
-            transform: scale(1.1);
-            border-color: var(--accent-cyan);
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--light-text);
-        }
-
-        .nav-section {
-            padding: 24px 0;
-        }
+        /* ── NAV ── */
+        .nav-section { padding: 20px 0; }
 
         .nav-label {
-            padding: 0 20px 12px;
+            padding: 0 20px 10px;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             color: var(--gray-text);
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.2s ease;
         }
 
         .nav-item {
@@ -201,2674 +151,713 @@
             gap: 14px;
             color: var(--gray-text);
             text-decoration: none;
-            transition: all 0.2s ease;
             cursor: pointer;
             border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
         }
-
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--light-text);
-        }
-
-        .nav-item.active {
-            background: rgba(0, 102, 255, 0.1);
-            color: var(--primary-blue);
-            border-left-color: var(--primary-blue);
-        }
-
-        .nav-item img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--light-text); }
+        .nav-item.active { background: rgba(0,102,255,0.1); color: var(--primary-blue); border-left-color: var(--primary-blue); }
 
         .nav-icon {
             font-size: 20px;
-            width: 24px;
+            min-width: 24px;
+            text-align: center;
+            flex-shrink: 0;
         }
 
-        .nav-text {
-            flex: 1;
-        }
+        .nav-text { flex: 1; overflow: hidden; transition: opacity 0.2s ease; }
+        .nav-subtitle { font-size: 12px; color: var(--gray-text); margin-top: 2px; }
 
-        .nav-subtitle {
-            font-size: 12px;
-            color: var(--gray-text);
-            margin-top: 2px;
-        }
-
+        /* ── LEARN TIP ── */
         .learn-tip {
-            margin: 24px 16px;
-            padding: 16px;
-            background: rgba(0, 212, 255, 0.08);
+            margin: 16px;
+            padding: 14px;
+            background: rgba(0,212,255,0.08);
             border-radius: 12px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .learn-tip-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .learn-tip-text {
+            border: 1px solid rgba(0,212,255,0.2);
             font-size: 13px;
             line-height: 1.5;
             color: var(--gray-text);
+            overflow: hidden;
+            transition: opacity 0.2s ease;
         }
 
-        /* Main Content */
+        /* ── MAIN CONTENT ── */
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
             padding: 40px 60px;
+            transition: margin-left 0.3s ease, margin-right 0.3s ease;
             animation: fadeIn 0.6s ease;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* ── HEADER ── */
         .header-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 14px;
-            background: rgba(0, 102, 255, 0.15);
-            border: 1px solid rgba(0, 102, 255, 0.3);
+            background: rgba(0,102,255,0.15);
+            border: 1px solid rgba(0,102,255,0.3);
             border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 13px; font-weight: 600;
             color: var(--primary-blue);
             margin-bottom: 24px;
         }
 
-        h1 {
-            font-size: 56px;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 20px;
-        }
+        h1 { font-size: 56px; font-weight: 700; line-height: 1.1; margin-bottom: 20px; }
 
         .title-gradient {
             background: linear-gradient(135deg, var(--primary-blue), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
 
-        .description {
-            font-size: 18px;
-            color: var(--gray-text);
-            max-width: 800px;
-            margin-bottom: 48px;
-            line-height: 1.7;
-        }
+        .description { font-size: 18px; color: var(--gray-text); max-width: 800px; margin-bottom: 48px; line-height: 1.7; }
 
-        /* Feature Cards */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
-        }
+        /* ── FEATURE CARDS ── */
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 24px; margin-bottom: 60px; }
 
         .feature-card {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 28px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 28px;
+            transition: all 0.3s ease; cursor: pointer;
+            position: relative; overflow: hidden;
         }
-
         .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
+            content: ''; position: absolute; top:0; left:0; right:0; height:3px;
             background: linear-gradient(90deg, var(--primary-blue), var(--accent-cyan));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+            transform: scaleX(0); transition: transform 0.3s ease;
         }
+        .feature-card:hover { transform: translateY(-4px); border-color: rgba(0,102,255,0.3); box-shadow: 0 12px 40px rgba(0,102,255,0.15); }
+        .feature-card:hover::before { transform: scaleX(1); }
 
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 102, 255, 0.3);
-            box-shadow: 0 12px 40px rgba(0, 102, 255, 0.15);
-        }
+        .feature-icon { width:56px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:20px; }
+        .icon-blue  { background: rgba(0,102,255,0.15); color: var(--primary-blue); }
+        .icon-cyan  { background: rgba(0,212,255,0.15); color: var(--accent-cyan); }
+        .icon-green { background: rgba(0,217,163,0.15); color: var(--success-green); }
 
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
+        .feature-title { font-size:20px; font-weight:600; margin-bottom:10px; }
+        .feature-desc  { font-size:14px; color:var(--gray-text); line-height:1.6; }
 
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
+        /* ── COURSE GRID ── */
+        .section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; }
+        .section-title  { font-size:32px; font-weight:700; }
+        .view-all { color:var(--primary-blue); text-decoration:none; font-weight:600; display:flex; align-items:center; gap:8px; transition:gap 0.3s ease; }
+        .view-all:hover { gap:12px; }
 
-        .icon-blue {
-            background: rgba(0, 102, 255, 0.15);
-            color: var(--primary-blue);
-        }
-
-        .icon-cyan {
-            background: rgba(0, 212, 255, 0.15);
-            color: var(--accent-cyan);
-        }
-
-        .icon-green {
-            background: rgba(0, 217, 163, 0.15);
-            color: var(--success-green);
-        }
-
-        .feature-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .feature-desc {
-            font-size: 14px;
-            color: var(--gray-text);
-            line-height: 1.6;
-        }
-
-        /* Course Content Section */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-        }
-
-        .section-title {
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .view-all {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: gap 0.3s ease;
-        }
-
-        .view-all:hover {
-            gap: 12px;
-        }
-
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
-        }
+        .course-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; margin-bottom:60px; }
 
         .course-card {
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .course-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-
-        .course-header {
-            padding: 24px;
-            background: linear-gradient(135deg, rgba(0, 102, 255, 0.1), rgba(0, 212, 255, 0.05));
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .course-icon {
-            font-size: 36px;
-            margin-bottom: 12px;
-        }
-
-        .course-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .course-subtitle {
-            font-size: 13px;
-            color: var(--gray-text);
-        }
-
-        .course-body {
-            padding: 24px;
-        }
-
-        .course-description {
-            font-size: 14px;
-            color: var(--gray-text);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .course-stats {
-            display: flex;
-            gap: 16px;
-            padding-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--gray-text);
-        }
-
-        /* Content Detail View */
-        .content-detail {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .content-detail.active {
-            display: block;
-        }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-
-        .breadcrumb a {
-            color: var(--gray-text);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .breadcrumb a:hover {
-            color: var(--primary-blue);
-        }
-
-        .breadcrumb-separator {
-            color: var(--gray-text);
-        }
-
-        .content-header {
-            background: linear-gradient(135deg, rgba(0, 102, 255, 0.08), rgba(0, 212, 255, 0.04));
-            border: 1px solid rgba(0, 102, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-        }
-
-        .content-meta {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .meta-badge {
-            padding: 6px 12px;
-            background: rgba(0, 102, 255, 0.2);
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .content-section {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 40px;
-            margin-bottom: 24px;
-        }
-
-        .content-section h2 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            color: var(--light-text);
-        }
-
-        .content-section h3 {
-            font-size: 22px;
-            margin: 28px 0 16px;
-            color: var(--primary-blue);
-        }
-
-        .content-section p {
-            font-size: 16px;
-            line-height: 1.8;
-            color: var(--gray-text);
-            margin-bottom: 16px;
-        }
-
-        .content-section ul,
-        .content-section ol {
-            margin-left: 24px;
-            margin-bottom: 20px;
-        }
-
-        .content-section li {
-            font-size: 16px;
-            line-height: 1.8;
-            color: var(--gray-text);
-            margin-bottom: 12px;
-        }
-
-        .formula-box {
-            background: rgba(0, 102, 255, 0.05);
-            border: 1px solid rgba(0, 102, 255, 0.2);
-            border-radius: 12px;
-            padding: 24px;
-            margin: 24px 0;
-            font-family: 'JetBrains Mono', monospace;
-            text-align: center;
-        }
-
-        .formula {
-            font-size: 24px;
-            color: var(--accent-cyan);
-            margin: 12px 0;
-        }
-
-        .example-box {
-            background: rgba(0, 217, 163, 0.05);
-            border-left: 4px solid var(--success-green);
-            padding: 24px;
-            margin: 24px 0;
-            border-radius: 8px;
-        }
-
-        .example-title {
-            font-weight: 600;
-            color: var(--success-green);
-            margin-bottom: 12px;
-        }
-
-        .info-box {
-            background: rgba(255, 149, 0, 0.05);
-            border-left: 4px solid var(--warning-orange);
-            padding: 24px;
-            margin: 24px 0;
-            border-radius: 8px;
-        }
-
-        .info-title {
-            font-weight: 600;
-            color: var(--warning-orange);
-            margin-bottom: 12px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 24px 0;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        th {
-            background: rgba(0, 102, 255, 0.2);
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            color: var(--light-text);
-        }
-
-        td {
-            padding: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            color: var(--gray-text);
-        }
-
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: var(--light-text);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            margin-top: 40px;
-        }
-
-        .back-button:hover {
-            background: var(--primary-blue);
-            border-color: var(--primary-blue);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 24px;
-            }
-
-            h1 {
-                font-size: 36px;
-            }
-
-            .feature-grid,
-            .course-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Scroll animations */
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .course-card {
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; overflow:hidden;
+            transition: all 0.3s ease; cursor:pointer;
             animation: slideUp 0.6s ease backwards;
         }
+        .course-card:nth-child(1){animation-delay:0.1s} .course-card:nth-child(2){animation-delay:0.2s}
+        .course-card:nth-child(3){animation-delay:0.3s} .course-card:nth-child(4){animation-delay:0.4s}
+        .course-card:nth-child(5){animation-delay:0.5s} .course-card:nth-child(6){animation-delay:0.6s}
+        .course-card:hover { transform:translateY(-6px); box-shadow:0 16px 48px rgba(0,0,0,0.4); border-color:rgba(255,255,255,0.12); }
 
-        .course-card:nth-child(1) {
-            animation-delay: 0.1s;
+        @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+        .course-header { padding:24px; background:linear-gradient(135deg,rgba(0,102,255,0.1),rgba(0,212,255,0.05)); border-bottom:1px solid rgba(255,255,255,0.06); }
+        .course-icon   { font-size:36px; margin-bottom:12px; }
+        .course-title  { font-size:20px; font-weight:600; margin-bottom:8px; }
+        .course-subtitle { font-size:13px; color:var(--gray-text); }
+
+        .course-body { padding:24px; }
+        .course-description { font-size:14px; color:var(--gray-text); line-height:1.6; margin-bottom:20px; }
+        .course-stats { display:flex; gap:16px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.06); }
+        .stat { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--gray-text); }
+
+        /* ── CONTENT DETAIL ── */
+        .content-detail { display:none; animation:fadeIn 0.5s ease; }
+        .content-detail.active { display:block; }
+
+        .breadcrumb { display:flex; align-items:center; gap:8px; margin-bottom:24px; font-size:14px; }
+        .breadcrumb a { color:var(--gray-text); text-decoration:none; transition:color 0.2s ease; }
+        .breadcrumb a:hover { color:var(--primary-blue); }
+        .breadcrumb-separator { color:var(--gray-text); }
+
+        .content-header { background:linear-gradient(135deg,rgba(0,102,255,0.08),rgba(0,212,255,0.04)); border:1px solid rgba(0,102,255,0.2); border-radius:20px; padding:40px; margin-bottom:40px; }
+        .content-meta { display:flex; gap:20px; margin-bottom:20px; }
+        .meta-badge { padding:6px 12px; background:rgba(0,102,255,0.2); border-radius:6px; font-size:12px; font-weight:600; }
+
+        .content-section { background:var(--card-bg); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:40px; margin-bottom:24px; }
+        .content-section h2 { font-size:28px; margin-bottom:20px; color:var(--light-text); }
+        .content-section h3 { font-size:22px; margin:28px 0 16px; color:var(--primary-blue); }
+        .content-section p  { font-size:16px; line-height:1.8; color:var(--gray-text); margin-bottom:16px; }
+        .content-section ul, .content-section ol { margin-left:24px; margin-bottom:20px; }
+        .content-section li { font-size:16px; line-height:1.8; color:var(--gray-text); margin-bottom:12px; }
+
+        .formula-box { background:rgba(0,102,255,0.05); border:1px solid rgba(0,102,255,0.2); border-radius:12px; padding:24px; margin:24px 0; font-family:'JetBrains Mono',monospace; text-align:center; }
+        .formula { font-size:24px; color:var(--accent-cyan); margin:12px 0; }
+
+        .example-box { background:rgba(0,217,163,0.05); border-left:4px solid var(--success-green); padding:24px; margin:24px 0; border-radius:8px; }
+        .example-title { font-weight:600; color:var(--success-green); margin-bottom:12px; }
+
+        .info-box { background:rgba(255,149,0,0.05); border-left:4px solid var(--warning-orange); padding:24px; margin:24px 0; border-radius:8px; }
+        .info-title { font-weight:600; color:var(--warning-orange); margin-bottom:12px; }
+
+        table { width:100%; border-collapse:collapse; margin:24px 0; background:rgba(0,0,0,0.2); border-radius:12px; overflow:hidden; }
+        th { background:rgba(0,102,255,0.2); padding:16px; text-align:left; font-weight:600; color:var(--light-text); }
+        td { padding:16px; border-top:1px solid rgba(255,255,255,0.06); color:var(--gray-text); }
+
+        .back-button { display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:var(--card-bg); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:var(--light-text); text-decoration:none; transition:all 0.3s ease; margin-top:40px; cursor:pointer; }
+        .back-button:hover { background:var(--primary-blue); border-color:var(--primary-blue); }
+
+        /* ── SETTINGS MODAL ── */
+        .settings-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); z-index:2000; justify-content:center; align-items:center; }
+        .settings-modal.active { display:flex; }
+
+        .settings-panel { background:var(--dark-bg); border:1px solid var(--primary-blue); border-radius:16px; width:90%; max-width:450px; max-height:80vh; overflow-y:auto; animation:modalSlide 0.3s ease; }
+        @keyframes modalSlide { from{opacity:0;transform:scale(0.9) translateY(-20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+        .settings-header { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .settings-header h2 { font-size:20px; color:var(--light-text); display:flex; align-items:center; gap:10px; }
+
+        .close-modal { width:32px; height:32px; background:transparent; border:1px solid rgba(255,255,255,0.2); border-radius:8px; color:var(--gray-text); cursor:pointer; font-size:18px; transition:all 0.2s ease; }
+        .close-modal:hover { background:#ff4757; border-color:#ff4757; color:#fff; }
+
+        .settings-body { padding:24px; }
+        .settings-section { margin-bottom:28px; }
+        .settings-section:last-child { margin-bottom:0; }
+        .settings-section h3 { font-size:14px; color:var(--gray-text); margin-bottom:16px; text-transform:uppercase; letter-spacing:1px; }
+
+        .setting-option { display:flex; align-items:center; gap:12px; padding:12px 16px; background:var(--card-bg); border:1px solid transparent; border-radius:10px; cursor:pointer; transition:all 0.2s ease; margin-bottom:8px; }
+        .setting-option:hover { border-color:rgba(0,102,255,0.3); }
+        .setting-option.active { border-color:var(--primary-blue); background:rgba(0,102,255,0.1); }
+        .setting-option input { display:none; }
+
+        .setting-icon { font-size:20px; }
+        .setting-label { flex:1; }
+        .setting-label strong { display:block; color:var(--light-text); margin-bottom:2px; }
+        .setting-label span { font-size:12px; color:var(--gray-text); }
+
+        .setting-check { width:20px; height:20px; border:2px solid var(--gray-text); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; }
+        .setting-option.active .setting-check { background:var(--primary-blue); border-color:var(--primary-blue); }
+        .setting-option.active .setting-check::after { content:'✓'; color:#fff; font-size:12px; }
+
+        /* ── COLOR MODES ── */
+        body.protanopia   { filter: url('#protanopia-filter'); }
+        body.deuteranopia { filter: url('#deuteranopia-filter'); }
+        body.tritanopia   { filter: url('#tritanopia-filter'); }
+        body.high-contrast{ filter: contrast(1.3) saturate(1.2); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease, width 0.3s ease; }
+            .sidebar.mobile-open { transform: translateX(0); }
+            body.sidebar-right .sidebar { transform: translateX(100%); }
+            body.sidebar-right .sidebar.mobile-open { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; margin-right: 0 !important; padding: 24px 20px; }
+            h1 { font-size: 36px; }
+            .feature-grid, .course-grid { grid-template-columns: 1fr; }
+            .mobile-menu-btn { display: flex !important; }
         }
 
-        .course-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .course-card:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .course-card:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        .course-card:nth-child(5) {
-            animation-delay: 0.5s;
-        }
-
-        .course-card:nth-child(6) {
-            animation-delay: 0.6s;
-        }
-
-        /* Botón de Configuración */
-        .settings-btn {
-            width: 28px;
-            height: 28px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: var(--gray-text);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            margin-left: 8px;
-        }
-
-        .settings-btn:hover {
-            background: var(--primary-blue);
-            border-color: var(--primary-blue);
-            color: white;
-            transform: rotate(90deg);
-        }
-
-        .sidebar.collapsed .settings-btn {
+        .mobile-menu-btn {
             display: none;
-        }
-
-        /* Modal de Configuración */
-        .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .settings-modal.active {
-            display: flex;
-        }
-
-        .settings-panel {
-            background: var(--dark-bg);
-            border: 1px solid var(--primary-blue);
-            border-radius: 16px;
-            width: 90%;
-            max-width: 450px;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: modalSlide 0.3s ease;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .settings-header h2 {
-            font-size: 20px;
-            color: var(--light-text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .close-modal {
-            width: 32px;
-            height: 32px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: var(--gray-text);
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.2s ease;
-        }
-
-        .close-modal:hover {
-            background: #ff4757;
-            border-color: #ff4757;
-            color: white;
-        }
-
-        .settings-body {
-            padding: 24px;
-        }
-
-        .settings-section {
-            margin-bottom: 28px;
-        }
-
-        .settings-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .settings-section h3 {
-            font-size: 14px;
-            color: var(--gray-text);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .setting-option {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: var(--card-bg);
-            border: 1px solid transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 8px;
-        }
-
-        .setting-option:hover {
-            border-color: rgba(0, 102, 255, 0.3);
-        }
-
-        .setting-option.active {
-            border-color: var(--primary-blue);
-            background: rgba(0, 102, 255, 0.1);
-        }
-
-        .setting-option input {
-            display: none;
-        }
-
-        .setting-icon {
-            font-size: 20px;
-        }
-
-        .setting-label {
-            flex: 1;
-        }
-
-        .setting-label strong {
-            display: block;
-            color: var(--light-text);
-            margin-bottom: 2px;
-        }
-
-        .setting-label span {
-            font-size: 12px;
-            color: var(--gray-text);
-        }
-
-        .setting-check {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--gray-text);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .setting-option.active .setting-check {
-            background: var(--primary-blue);
-            border-color: var(--primary-blue);
-        }
-
-        .setting-option.active .setting-check::after {
-            content: '✓';
-            color: white;
-            font-size: 12px;
-        }
-
-        /* Sidebar a la derecha */
-        body.sidebar-right .sidebar {
-            left: auto;
-            right: 0;
-            border-right: none;
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        body.sidebar-right .main-content {
-            margin-left: 0;
-            margin-right: var(--sidebar-width);
-        }
-
-        body.sidebar-right .sidebar.collapsed+.main-content {
-            margin-right: 70px;
-            margin-left: 0;
-        }
-
-        body.sidebar-right .toggle-btn {
-            transform: scaleX(-1);
-        }
-
-        /* Modos de Daltonismo */
-        body.protanopia {
-            filter: url('#protanopia-filter');
-        }
-
-        body.deuteranopia {
-            filter: url('#deuteranopia-filter');
-        }
-
-        body.tritanopia {
-            filter: url('#tritanopia-filter');
-        }
-
-        body.high-contrast {
-            filter: contrast(1.3) saturate(1.2);
+            position: fixed; top: 16px; left: 16px; z-index: 999;
+            width: 40px; height: 40px;
+            background: var(--dark-bg); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; align-items:center; justify-content:center;
+            font-size: 18px; cursor: pointer; color: var(--light-text);
         }
     </style>
 </head>
 
 <body>
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar" id="sidebar">
-        <div class="logo">
-            <img src="digi.png" alt="Logo  Digitech">
-            <div class="nav-text">Digitech</div>
-            <button class="toggle-btn" onclick="toggleSidebar()" title="Colapsar menú">
-                ◀
-            </button>
-            <button class="settings-btn" onclick="openSettings()" title="Configuración">
-                ⚙
-            </button>
-        </div>
 
-        <div class="nav-section">
-            <div class="nav-label">CONTENIDOS</div>
-            <a class="nav-item active" onclick="showHome()">
-                <img src="inicio.png" alt="Inicio">
-                <div class="nav-text">Inicio</div>
-            </a>
-            <a class="nav-item" onclick="showContent('energia')">
-                <img src="energia.png" alt="Energía Eléctrica">
-                <div class="nav-text">
-                    Energía Eléctrica
-                    <div class="nav-subtitle">Conceptos fundamentales</div>
-                </div>
-            </a>
-            <a class="nav-item" onclick="showContent('leyes')">
-                <img src="leyes.png" alt="Leyes Básicas">
-                <div class="nav-text">
-                    Leyes Básicas
-                    <div class="nav-subtitle">Ohm, Kirchhoff y más</div>
-                </div>
-            </a>
-            <a class="nav-item" onclick="showContent('circuitos')">
-                <img src="circuitos.png" alt="Analisis de Circuitos">
-                <div class="nav-text">
-                    Análisis de Circuitos
-                    <div class="nav-subtitle">Serie, paralelo y mixtos</div>
-                </div>
-            </a>
-            <a class="nav-item" onclick="showContent('binario')">
-                <img src="binario.png" alt="Sistema Binario">
-                <div class="nav-text">
-                    Sistema Binario
-                    <div class="nav-subtitle">Numeración digital</div>
-                </div>
-            </a>
-            <a class="nav-item" onclick="showContent('tablas')">
-                <img src="tablas.png" alt="Tablas de Verdad">
-                <div class="nav-text">
-                    Tablas de Verdad
-                    <div class="nav-subtitle">Lógica proposicional</div>
-                </div>
-            </a>
-            <a class="nav-item" onclick="showContent('karnaugh')">
-                <img src="karnaugh.png" alt="Mapas de Karnaugh">
-                <div class="nav-text">
-                    Mapas de Karnaugh
-                    <div class="nav-subtitle">Simplificación lógica</div>
-                </div>
-            </a>
-        </div>
+<!-- SVG Filters para Daltonismo -->
+<svg style="display:none;">
+    <defs>
+        <filter id="protanopia-filter">
+            <feColorMatrix type="matrix" values="0.567,0.433,0,0,0 0.558,0.442,0,0,0 0,0.242,0.758,0,0 0,0,0,1,0"/>
+        </filter>
+        <filter id="deuteranopia-filter">
+            <feColorMatrix type="matrix" values="0.625,0.375,0,0,0 0.7,0.3,0,0,0 0,0.3,0.7,0,0 0,0,0,1,0"/>
+        </filter>
+        <filter id="tritanopia-filter">
+            <feColorMatrix type="matrix" values="0.95,0.05,0,0,0 0,0.433,0.567,0,0 0,0.475,0.525,0,0 0,0,0,1,0"/>
+        </filter>
+    </defs>
+</svg>
 
-        <div class="learn-tip">
-            <div class="learn-tip-text">Aprende a tu propio ritmo. Cada tema incluye ejemplos prácticos.</div>
-        </div>
-    </nav>
+<!-- Mobile menu button -->
+<button class="mobile-menu-btn" onclick="toggleMobileMenu()" title="Menú">☰</button>
 
-    <!-- Settings Modal -->
-    <div class="settings-modal" id="settingsModal">
-        <div class="settings-panel">
-            <div class="settings-header">
-                <h2>⚙ Configuración</h2>
-                <button class="close-modal" onclick="closeSettings()">✕</button>
+<!-- ══════════ SIDEBAR ══════════ -->
+<nav class="sidebar" id="sidebar">
+    <div class="logo">
+        <div class="logo-icon-wrap">⚡</div>
+        <span class="logo-text">DigiTech</span>
+        <button class="toggle-btn" id="toggleBtn" onclick="toggleSidebar()" title="Colapsar menú">◀</button>
+        <button class="settings-btn" onclick="openSettings()" title="Configuración">⚙</button>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-label">CONTENIDOS</div>
+
+        <a class="nav-item active" onclick="showHome()">
+            <span class="nav-icon">🏠</span>
+            <div class="nav-text">Inicio</div>
+        </a>
+        <a class="nav-item" onclick="showContent('energia')">
+            <span class="nav-icon">⚡</span>
+            <div class="nav-text">
+                Energía Eléctrica
+                <div class="nav-subtitle">Conceptos fundamentales</div>
             </div>
-            <div class="settings-body">
-                <div class="settings-section">
-                    <h3>📍 Posición del Sidebar</h3>
-                    <label class="setting-option active" onclick="setSidebarPosition('left')">
-                        <input type="radio" name="sidebar-position" value="left" checked>
-                        <span class="setting-icon">◀</span>
-                        <div class="setting-label">
-                            <strong>Izquierda</strong>
-                            <span>Barra lateral a la izquierda</span>
-                        </div>
-                        <div class="setting-check"></div>
-                    </label>
-                    <label class="setting-option" onclick="setSidebarPosition('right')">
-                        <input type="radio" name="sidebar-position" value="right">
-                        <span class="setting-icon">▶</span>
-                        <div class="setting-label">
-                            <strong>Derecha</strong>
-                            <span>Barra lateral a la derecha</span>
-                        </div>
-                        <div class="setting-check"></div>
-                    </label>
-                </div>
+        </a>
+        <a class="nav-item" onclick="showContent('leyes')">
+            <span class="nav-icon">📚</span>
+            <div class="nav-text">
+                Leyes Básicas
+                <div class="nav-subtitle">Ohm, Kirchhoff y más</div>
+            </div>
+        </a>
+        <a class="nav-item" onclick="showContent('circuitos')">
+            <span class="nav-icon">🔌</span>
+            <div class="nav-text">
+                Análisis de Circuitos
+                <div class="nav-subtitle">Serie, paralelo y mixtos</div>
+            </div>
+        </a>
+        <a class="nav-item" onclick="showContent('binario')">
+            <span class="nav-icon">💻</span>
+            <div class="nav-text">
+                Sistema Binario
+                <div class="nav-subtitle">Numeración digital</div>
+            </div>
+        </a>
+        <a class="nav-item" onclick="showContent('tablas')">
+            <span class="nav-icon">📊</span>
+            <div class="nav-text">
+                Tablas de Verdad
+                <div class="nav-subtitle">Lógica proposicional</div>
+            </div>
+        </a>
+        <a class="nav-item" onclick="showContent('karnaugh')">
+            <span class="nav-icon">🗺️</span>
+            <div class="nav-text">
+                Mapas de Karnaugh
+                <div class="nav-subtitle">Simplificación lógica</div>
+            </div>
+        </a>
+    </div>
 
-                <div class="settings-section">
-                    <h3>👁 Modo de Visión</h3>
-                    <label class="setting-option active" onclick="setColorMode('normal')">
-                        <input type="radio" name="color-mode" value="normal" checked>
-                        <span class="setting-icon">🎨</span>
-                        <div class="setting-label">
-                            <strong>Normal</strong>
-                            <span>Visión de colores estándar</span>
-                        </div>
-                        <div class="setting-check"></div>
-                    </label>
-                    <label class="setting-option" onclick="setColorMode('protanopia')">
-                        <input type="radio" name="color-mode" value="protanopia">
-                        <span class="setting-icon">🔴</span>
-                        <div class="setting-label">
-                            <strong>Protanopía</strong>
-                            <span>Dificultad con el color rojo</span>
-                        </div>
-                        <div class="setting-check"></div>
-                    </label>
-                    <label class="setting-option" onclick="setColorMode('deuteranopia')">
-                        <input type="radio" name="color-mode" value="deuteranopia">
-                        <span class="setting-icon">🟢</span>
-                        <div class="setting-label">
-                            <strong>Deuteranopía</strong>
-                            <span>Dificultad con el color verde</span>
-                        </div>
-                        <div class="setting-check"></div>
-                    </label>
-                    <label class="setting-option" onclick="setColorMode('tritanopia')">
-                        <input type="radio" name="color-mode" value="tritanopia">
-                        <span class="setting-icon">🔵</span>
-                        <div class="setting-label">
-                            <strong>Tritanopía</strong>
-                            <span>Dificultad con el color azul</span>
-                        </div>
-                        <div class="setting-check"></div>
-                    </label>
-                    <label class="setting-option" onclick="setColorMode('high-contrast')">
-                        <input type="radio" name="color-mode" value="high-contrast">
-                        <span class="setting-icon">◐</span>
-                        <div class="setting-label">
-                            <strong>Alto Contraste</strong>
-                            <span>Colores más intensos y definidos</span>
-                        </div>
-                        <div class="setting-check"></div>
-                    </label>
-                </div>
+    <div class="learn-tip">
+        Aprende a tu propio ritmo. Cada tema incluye ejemplos prácticos.
+    </div>
+</nav>
+
+<!-- ══════════ SETTINGS MODAL ══════════ -->
+<div class="settings-modal" id="settingsModal">
+    <div class="settings-panel">
+        <div class="settings-header">
+            <h2>⚙ Configuración</h2>
+            <button class="close-modal" onclick="closeSettings()">✕</button>
+        </div>
+        <div class="settings-body">
+            <div class="settings-section">
+                <h3>📍 Posición del Sidebar</h3>
+                <label class="setting-option active" onclick="setSidebarPosition('left')">
+                    <input type="radio" name="sidebar-position" value="left" checked>
+                    <span class="setting-icon">◀</span>
+                    <div class="setting-label">
+                        <strong>Izquierda</strong>
+                        <span>Barra lateral a la izquierda</span>
+                    </div>
+                    <div class="setting-check"></div>
+                </label>
+                <label class="setting-option" onclick="setSidebarPosition('right')">
+                    <input type="radio" name="sidebar-position" value="right">
+                    <span class="setting-icon">▶</span>
+                    <div class="setting-label">
+                        <strong>Derecha</strong>
+                        <span>Barra lateral a la derecha</span>
+                    </div>
+                    <div class="setting-check"></div>
+                </label>
+            </div>
+
+            <div class="settings-section">
+                <h3>👁 Modo de Visión</h3>
+                <label class="setting-option active" onclick="setColorMode('normal')">
+                    <input type="radio" name="color-mode" value="normal" checked>
+                    <span class="setting-icon">🎨</span>
+                    <div class="setting-label"><strong>Normal</strong><span>Visión de colores estándar</span></div>
+                    <div class="setting-check"></div>
+                </label>
+                <label class="setting-option" onclick="setColorMode('protanopia')">
+                    <input type="radio" name="color-mode" value="protanopia">
+                    <span class="setting-icon">🔴</span>
+                    <div class="setting-label"><strong>Protanopía</strong><span>Dificultad con el color rojo</span></div>
+                    <div class="setting-check"></div>
+                </label>
+                <label class="setting-option" onclick="setColorMode('deuteranopia')">
+                    <input type="radio" name="color-mode" value="deuteranopia">
+                    <span class="setting-icon">🟢</span>
+                    <div class="setting-label"><strong>Deuteranopía</strong><span>Dificultad con el color verde</span></div>
+                    <div class="setting-check"></div>
+                </label>
+                <label class="setting-option" onclick="setColorMode('tritanopia')">
+                    <input type="radio" name="color-mode" value="tritanopia">
+                    <span class="setting-icon">🔵</span>
+                    <div class="setting-label"><strong>Tritanopía</strong><span>Dificultad con el color azul</span></div>
+                    <div class="setting-check"></div>
+                </label>
+                <label class="setting-option" onclick="setColorMode('high-contrast')">
+                    <input type="radio" name="color-mode" value="high-contrast">
+                    <span class="setting-icon">◐</span>
+                    <div class="setting-label"><strong>Alto Contraste</strong><span>Colores más intensos y definidos</span></div>
+                    <div class="setting-check"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ MAIN CONTENT ══════════ -->
+<main class="main-content" id="mainContent">
+
+    <!-- HOME VIEW -->
+    <div id="home-view">
+        <div class="header-badge"><span>🎓</span> Plataforma Educativa</div>
+        <h1>Electrónica y<br><span class="title-gradient">Sistemas Digitales</span></h1>
+        <p class="description">
+            Plataforma de apoyo académico diseñada para facilitar el aprendizaje de conceptos
+            fundamentales de electrónica y sistemas digitales. Contenidos claros, organizados y
+            accesibles para estudiantes de todos los niveles.
+        </p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon icon-blue">🎯</div>
+                <h3 class="feature-title">Aprendizaje Progresivo</h3>
+                <p class="feature-desc">Contenidos organizados de menor a mayor complejidad</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-cyan">📖</div>
+                <h3 class="feature-title">Teoría y Práctica</h3>
+                <p class="feature-desc">Explicaciones claras con ejemplos aplicados</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-green">🎓</div>
+                <h3 class="feature-title">Material de Consulta</h3>
+                <p class="feature-desc">Recurso complementario para tu formación</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Contenidos del Curso</h2>
+            <a href="#" class="view-all">6 temas disponibles <span>→</span></a>
+        </div>
+
+        <div class="course-grid">
+            <div class="course-card" onclick="showContent('energia')">
+                <div class="course-header"><div class="course-icon">⚡</div><h3 class="course-title">Energía Eléctrica</h3><p class="course-subtitle">Conceptos fundamentales</p></div>
+                <div class="course-body"><p class="course-description">Introducción a los conceptos básicos de electricidad, voltaje, corriente y resistencia.</p><div class="course-stats"><span class="stat">📝 Nivel básico</span><span class="stat">⏱️ 45 min</span></div></div>
+            </div>
+            <div class="course-card" onclick="showContent('leyes')">
+                <div class="course-header"><div class="course-icon">📚</div><h3 class="course-title">Leyes Básicas</h3><p class="course-subtitle">Ohm, Kirchhoff y más</p></div>
+                <div class="course-body"><p class="course-description">Ley de Ohm, leyes de Kirchhoff y otras reglas fundamentales del circuito eléctrico.</p><div class="course-stats"><span class="stat">📝 Nivel intermedio</span><span class="stat">⏱️ 60 min</span></div></div>
+            </div>
+            <div class="course-card" onclick="showContent('circuitos')">
+                <div class="course-header"><div class="course-icon">🔌</div><h3 class="course-title">Análisis de Circuitos</h3><p class="course-subtitle">Serie, paralelo y mixtos</p></div>
+                <div class="course-body"><p class="course-description">Métodos de análisis de circuitos en serie, paralelo y mixtos. Cálculo de voltajes y corrientes.</p><div class="course-stats"><span class="stat">📝 Nivel intermedio</span><span class="stat">⏱️ 75 min</span></div></div>
+            </div>
+            <div class="course-card" onclick="showContent('binario')">
+                <div class="course-header"><div class="course-icon">💻</div><h3 class="course-title">Sistema Binario</h3><p class="course-subtitle">Numeración digital</p></div>
+                <div class="course-body"><p class="course-description">Sistema de numeración binaria, conversiones entre sistemas y operaciones aritméticas.</p><div class="course-stats"><span class="stat">📝 Nivel básico</span><span class="stat">⏱️ 50 min</span></div></div>
+            </div>
+            <div class="course-card" onclick="showContent('tablas')">
+                <div class="course-header"><div class="course-icon">📊</div><h3 class="course-title">Tablas de Verdad</h3><p class="course-subtitle">Lógica proposicional</p></div>
+                <div class="course-body"><p class="course-description">Compuertas lógicas básicas, tablas de verdad y expresiones booleanas fundamentales.</p><div class="course-stats"><span class="stat">📝 Nivel intermedio</span><span class="stat">⏱️ 55 min</span></div></div>
+            </div>
+            <div class="course-card" onclick="showContent('karnaugh')">
+                <div class="course-header"><div class="course-icon">🗺️</div><h3 class="course-title">Mapas de Karnaugh</h3><p class="course-subtitle">Simplificación lógica</p></div>
+                <div class="course-body"><p class="course-description">Técnica gráfica para simplificar funciones booleanas y optimizar circuitos digitales.</p><div class="course-stats"><span class="stat">📝 Nivel avanzado</span><span class="stat">⏱️ 90 min</span></div></div>
             </div>
         </div>
     </div>
 
-    <!-- SVG Filters para Daltonismo -->
-    <svg style="display: none;">
-        <defs>
-            <!-- Protanopia: dificultad con rojo -->
-            <filter id="protanopia-filter">
-                <feColorMatrix type="matrix" values="
-                    0.567, 0.433, 0,     0, 0
-                    0.558, 0.442, 0,     0, 0
-                    0,     0.242, 0.758, 0, 0
-                    0,     0,     0,     1, 0
-                " />
-            </filter>
-            <!-- Deuteranopia: dificultad con verde -->
-            <filter id="deuteranopia-filter">
-                <feColorMatrix type="matrix" values="
-                    0.625, 0.375, 0,   0, 0
-                    0.7,   0.3,   0,   0, 0
-                    0,     0.3,   0.7, 0, 0
-                    0,     0,     0,   1, 0
-                " />
-            </filter>
-            <!-- Tritanopia: dificultad con azul -->
-            <filter id="tritanopia-filter">
-                <feColorMatrix type="matrix" values="
-                    0.95, 0.05,  0,     0, 0
-                    0,    0.433, 0.567, 0, 0
-                    0,    0.475, 0.525, 0, 0
-                    0,    0,     0,     1, 0
-                " />
-            </filter>
-        </defs>
-    </svg>
+    <!-- ENERGÍA -->
+    <div id="energia-view" class="content-detail">
+        <div class="breadcrumb"><a onclick="showHome()">Inicio</a><span class="breadcrumb-separator">/</span><span>Energía Eléctrica</span></div>
+        <div class="content-header">
+            <div class="content-meta"><span class="meta-badge">⚡ Conceptos Fundamentales</span><span class="meta-badge">📝 Nivel Básico</span></div>
+            <h1>Energía Eléctrica</h1>
+            <p class="description">Fundamentos de la electricidad y sus magnitudes básicas</p>
+        </div>
+        <div class="content-section">
+            <h2>¿Qué es la Energía Eléctrica?</h2>
+            <p>La energía eléctrica es una forma de energía basada en la generación de diferencias de potencial eléctrico entre dos puntos, permitiendo el flujo de electrones a través de un conductor.</p>
+            <h3>1. Voltaje (V)</h3>
+            <p>El voltaje o diferencia de potencial es la presión eléctrica que impulsa a los electrones a moverse a través de un conductor. Se mide en Voltios (V).</p>
+            <div class="formula-box"><p>Unidad: Voltios (V)</p><div class="formula">V = W / Q</div><p>Donde W es trabajo y Q es carga</p></div>
+            <h3>2. Corriente Eléctrica (I)</h3>
+            <p>La corriente eléctrica es el flujo de carga eléctrica que circula por un conductor en un tiempo determinado. Se mide en Amperios (A).</p>
+            <div class="formula-box"><p>Unidad: Amperios (A)</p><div class="formula">I = Q / t</div><p>Donde Q es carga y t es tiempo</p></div>
+            <div class="info-box"><div class="info-title">💡 Tipos de Corriente</div><p><strong>Corriente Continua (DC):</strong> Flujo constante en una dirección (baterías, pilas)</p><p><strong>Corriente Alterna (AC):</strong> Flujo que cambia de dirección periódicamente (red eléctrica)</p></div>
+            <h3>3. Resistencia Eléctrica (R)</h3>
+            <p>La resistencia es la oposición que presenta un material al paso de la corriente eléctrica. Se mide en Ohmios (Ω).</p>
+            <div class="formula-box"><p>Unidad: Ohmios (Ω)</p><div class="formula">R = ρ × (L / A)</div><p>Donde ρ es resistividad, L longitud y A área</p></div>
+            <h3>4. Potencia Eléctrica (P)</h3>
+            <p>La potencia eléctrica es la cantidad de energía entregada o absorbida por un elemento en un tiempo determinado. Se mide en Watts (W).</p>
+            <div class="formula-box"><p>Unidad: Watts (W)</p><div class="formula">P = V × I</div><p>También: P = I² × R = V² / R</p></div>
+            <div class="example-box"><div class="example-title">📌 Ejemplo Práctico</div><p>Si una lámpara opera a 120V y consume 0.5A de corriente, ¿cuál es su potencia?</p><p><strong>Solución:</strong> P = V × I = 120V × 0.5A = <strong>60W</strong></p></div>
+            <h3>Tabla Resumen de Magnitudes</h3>
+            <table><tr><th>Magnitud</th><th>Símbolo</th><th>Unidad</th><th>Descripción</th></tr><tr><td>Voltaje</td><td>V</td><td>Voltios (V)</td><td>Diferencia de potencial</td></tr><tr><td>Corriente</td><td>I</td><td>Amperios (A)</td><td>Flujo de carga</td></tr><tr><td>Resistencia</td><td>R</td><td>Ohmios (Ω)</td><td>Oposición al flujo</td></tr><tr><td>Potencia</td><td>P</td><td>Watts (W)</td><td>Energía por tiempo</td></tr></table>
+        </div>
+        <button class="back-button" onclick="showHome()">← Volver al inicio</button>
+    </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Home View -->
-        <div id="home-view">
-            <div class="header-badge">
-                <span>🎓</span> Plataforma Educativa
-            </div>
+    <!-- LEYES -->
+    <div id="leyes-view" class="content-detail">
+        <div class="breadcrumb"><a onclick="showHome()">Inicio</a><span class="breadcrumb-separator">/</span><span>Leyes Básicas</span></div>
+        <div class="content-header">
+            <div class="content-meta"><span class="meta-badge">📚 Leyes Fundamentales</span><span class="meta-badge">📝 Nivel Intermedio</span></div>
+            <h1>Leyes Básicas de la Electricidad</h1>
+            <p class="description">Principios fundamentales que rigen el comportamiento de los circuitos eléctricos</p>
+        </div>
+        <div class="content-section">
+            <h2>Ley de Ohm</h2>
+            <p>La Ley de Ohm establece la relación entre voltaje, corriente y resistencia en un circuito eléctrico.</p>
+            <div class="formula-box"><p>Ley de Ohm</p><div class="formula">V = I × R</div><p>El voltaje es igual al producto de la corriente por la resistencia</p></div>
+            <ul><li>I = V / R</li><li>R = V / I</li></ul>
+            <div class="example-box"><div class="example-title">📌 Ejemplo - Ley de Ohm</div><p>Un resistor de 100Ω conectado a 12V.</p><p><strong>I = V / R = 12V / 100Ω = 0.12A = 120mA</strong></p></div>
+            <h2>Leyes de Kirchhoff</h2>
+            <h3>Primera Ley (KCL) — Ley de Corrientes</h3>
+            <div class="formula-box"><p>KCL — Ley de Nodos</p><div class="formula">∑ I = 0</div><p>Suma de corrientes entrantes = suma de corrientes salientes</p></div>
+            <h3>Segunda Ley (KVL) — Ley de Voltajes</h3>
+            <div class="formula-box"><p>KVL — Ley de Mallas</p><div class="formula">∑ V = 0</div><p>La suma algebraica de voltajes en un lazo cerrado es cero</p></div>
+            <div class="example-box"><div class="example-title">📌 Ejemplo KVL</div><p>Fuente 24V con caídas de 8V, 10V y 6V: 24V − 8V − 10V − 6V = 0 ✓</p></div>
+            <h2>Ley de Watt</h2>
+            <div class="formula-box"><p>Ley de Watt</p><div class="formula">P = V × I</div><p>También: P = I² × R = V² / R</p></div>
+            <table>
+                <tr><th>Si conoces</th><th>P</th><th>V</th><th>I</th><th>R</th></tr>
+                <tr><td>V, I</td><td>V × I</td><td>—</td><td>—</td><td>V / I</td></tr>
+                <tr><td>I, R</td><td>I² × R</td><td>I × R</td><td>—</td><td>—</td></tr>
+                <tr><td>V, R</td><td>V² / R</td><td>—</td><td>V / R</td><td>—</td></tr>
+            </table>
+        </div>
+        <button class="back-button" onclick="showHome()">← Volver al inicio</button>
+    </div>
 
-            <h1>
-                Electrónica y<br>
-                <span class="title-gradient">Sistemas Digitales</span>
-            </h1>
+    <!-- CIRCUITOS -->
+    <div id="circuitos-view" class="content-detail">
+        <div class="breadcrumb"><a onclick="showHome()">Inicio</a><span class="breadcrumb-separator">/</span><span>Análisis de Circuitos</span></div>
+        <div class="content-header">
+            <div class="content-meta"><span class="meta-badge">🔌 Análisis de Circuitos</span><span class="meta-badge">📝 Nivel Intermedio</span></div>
+            <h1>Análisis de Circuitos</h1>
+            <p class="description">Métodos de análisis para circuitos en serie, paralelo y mixtos</p>
+        </div>
+        <div class="content-section">
+            <h2>Circuitos en Serie</h2>
+            <ul><li>La corriente es la misma en todos los componentes</li><li>El voltaje total se divide entre los componentes</li><li>R total = suma de todas las resistencias</li></ul>
+            <div class="formula-box"><div class="formula">R<sub>t</sub> = R₁ + R₂ + R₃</div></div>
+            <div class="example-box"><div class="example-title">📌 Ejemplo Serie</div><p>R₁=10Ω, R₂=20Ω, R₃=30Ω a 120V → R<sub>t</sub>=60Ω → I=2A → V₁=20V, V₂=40V, V₃=60V ✓</p></div>
+            <h2>Circuitos en Paralelo</h2>
+            <ul><li>El voltaje es el mismo en todos los componentes</li><li>La corriente total se divide entre las ramas</li></ul>
+            <div class="formula-box"><div class="formula">1/R<sub>t</sub> = 1/R₁ + 1/R₂ + 1/R₃</div><p>Para 2 resistores: R<sub>t</sub> = (R₁ × R₂) / (R₁ + R₂)</p></div>
+            <div class="example-box"><div class="example-title">📌 Ejemplo Paralelo</div><p>R₁=12Ω, R₂=6Ω, R₃=4Ω a 12V → I₁=1A, I₂=2A, I₃=3A → I<sub>t</sub>=6A → R<sub>t</sub>=2Ω</p></div>
+            <h2>Divisor de Voltaje</h2>
+            <div class="formula-box"><div class="formula">V<sub>R</sub> = V<sub>t</sub> × (R / R<sub>t</sub>)</div></div>
+            <h2>Divisor de Corriente</h2>
+            <div class="formula-box"><div class="formula">I₁ = I<sub>t</sub> × (R₂ / (R₁ + R₂))</div></div>
+        </div>
+        <button class="back-button" onclick="showHome()">← Volver al inicio</button>
+    </div>
 
-            <p class="description">
-                Plataforma de apoyo académico diseñada para facilitar el aprendizaje de conceptos
-                fundamentales de electrónica y sistemas digitales. Contenidos claros, organizados y
-                accesibles para estudiantes de todos los niveles.
-            </p>
+    <!-- BINARIO -->
+    <div id="binario-view" class="content-detail">
+        <div class="breadcrumb"><a onclick="showHome()">Inicio</a><span class="breadcrumb-separator">/</span><span>Sistema Binario</span></div>
+        <div class="content-header">
+            <div class="content-meta"><span class="meta-badge">💻 Sistemas Digitales</span><span class="meta-badge">📝 Nivel Básico</span></div>
+            <h1>Sistema de Numeración Binario</h1>
+            <p class="description">Fundamentos del sistema binario y conversiones entre sistemas numéricos</p>
+        </div>
+        <div class="content-section">
+            <h2>¿Qué es el Sistema Binario?</h2>
+            <p>El sistema binario es un sistema de numeración en base 2 que utiliza únicamente 0 y 1. Es el sistema fundamental de las computadoras y sistemas digitales.</p>
+            <table><tr><th>Sistema</th><th>Base</th><th>Dígitos</th><th>Uso</th></tr><tr><td>Decimal</td><td>10</td><td>0-9</td><td>Cotidiano</td></tr><tr><td>Binario</td><td>2</td><td>0, 1</td><td>Computadoras</td></tr><tr><td>Octal</td><td>8</td><td>0-7</td><td>Programación</td></tr><tr><td>Hexadecimal</td><td>16</td><td>0-9, A-F</td><td>Memoria</td></tr></table>
+            <h2>Decimal → Binario</h2>
+            <div class="example-box"><div class="example-title">📌 25₁₀ → binario</div><p>25÷2=12 r<strong>1</strong> | 12÷2=6 r<strong>0</strong> | 6÷2=3 r<strong>0</strong> | 3÷2=1 r<strong>1</strong> | 1÷2=0 r<strong>1</strong></p><p><strong>Resultado: 11001₂</strong></p></div>
+            <h2>Binario → Decimal</h2>
+            <div class="formula-box"><div class="formula">N = d<sub>n</sub>×2ⁿ + … + d₁×2¹ + d₀×2⁰</div></div>
+            <div class="example-box"><div class="example-title">📌 11001₂ → decimal</div><p>1×16 + 1×8 + 0×4 + 0×2 + 1×1 = <strong>25₁₀</strong></p></div>
+            <h2>Suma Binaria</h2>
+            <ul><li>0+0=0</li><li>0+1=1</li><li>1+1=10 (acarreo)</li></ul>
+            <div class="example-box"><div class="example-title">📌 1101₂ + 1011₂</div><pre style="font-family:'JetBrains Mono',monospace;color:var(--accent-cyan);margin:12px 0;">  1101
++ 1011
+------
+ 11000</pre><p>13 + 11 = 24 ✓</p></div>
+            <h3>Tabla de Conversión Rápida</h3>
+            <table><tr><th>Decimal</th><th>Binario</th><th>Hex</th></tr><tr><td>0</td><td>0000</td><td>0</td></tr><tr><td>1</td><td>0001</td><td>1</td></tr><tr><td>2</td><td>0010</td><td>2</td></tr><tr><td>4</td><td>0100</td><td>4</td></tr><tr><td>8</td><td>1000</td><td>8</td></tr><tr><td>10</td><td>1010</td><td>A</td></tr><tr><td>15</td><td>1111</td><td>F</td></tr></table>
+        </div>
+        <button class="back-button" onclick="showHome()">← Volver al inicio</button>
+    </div>
 
-            <!-- Feature Cards -->
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon icon-blue">🎯</div>
-                    <h3 class="feature-title">Aprendizaje Progresivo</h3>
-                    <p class="feature-desc">Contenidos organizados de menor a mayor complejidad</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon icon-cyan">📖</div>
-                    <h3 class="feature-title">Teoría y Práctica</h3>
-                    <p class="feature-desc">Explicaciones claras con ejemplos aplicados</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon icon-green">🎓</div>
-                    <h3 class="feature-title">Material de Consulta</h3>
-                    <p class="feature-desc">Recurso complementario para tu formación</p>
-                </div>
-            </div>
-
-            <!-- Course Content -->
-            <div class="section-header">
-                <h2 class="section-title">Contenidos del Curso</h2>
-                <a href="#" class="view-all">
-                    6 temas disponibles <span>→</span>
-                </a>
-            </div>
-
-            <div class="course-grid">
-                <div class="course-card" onclick="showContent('energia')">
-                    <div class="course-header">
-                        <div class="course-icon">⚡</div>
-                        <h3 class="course-title">Energía Eléctrica</h3>
-                        <p class="course-subtitle">Conceptos fundamentales</p>
-                    </div>
-                    <div class="course-body">
-                        <p class="course-description">
-                            Introducción a los conceptos básicos de electricidad, voltaje, corriente
-                            y resistencia. Fundamentos esenciales para comprender los circuitos eléctricos.
-                        </p>
-                        <div class="course-stats">
-                            <span class="stat">📝 Nivel básico</span>
-                            <span class="stat">⏱️ 45 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card" onclick="showContent('leyes')">
-                    <div class="course-header">
-                        <div class="course-icon">📚</div>
-                        <h3 class="course-title">Leyes Básicas</h3>
-                        <p class="course-subtitle">Ohm, Kirchhoff y más</p>
-                    </div>
-                    <div class="course-body">
-                        <p class="course-description">
-                            Ley de Ohm, leyes de Kirchhoff y otras reglas fundamentales que rigen
-                            el comportamiento de los circuitos eléctricos.
-                        </p>
-                        <div class="course-stats">
-                            <span class="stat">📝 Nivel intermedio</span>
-                            <span class="stat">⏱️ 60 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card" onclick="showContent('circuitos')">
-                    <div class="course-header">
-                        <div class="course-icon">🔌</div>
-                        <h3 class="course-title">Análisis de Circuitos</h3>
-                        <p class="course-subtitle">Serie, paralelo y mixtos</p>
-                    </div>
-                    <div class="course-body">
-                        <p class="course-description">
-                            Métodos de análisis de circuitos en serie, paralelo y mixtos.
-                            Cálculo de voltajes, corrientes y potencias.
-                        </p>
-                        <div class="course-stats">
-                            <span class="stat">📝 Nivel intermedio</span>
-                            <span class="stat">⏱️ 75 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card" onclick="showContent('binario')">
-                    <div class="course-header">
-                        <div class="course-icon">💻</div>
-                        <h3 class="course-title">Sistema Binario</h3>
-                        <p class="course-subtitle">Numeración digital</p>
-                    </div>
-                    <div class="course-body">
-                        <p class="course-description">
-                            Sistema de numeración binaria, conversiones entre sistemas y
-                            operaciones aritméticas básicas en binario.
-                        </p>
-                        <div class="course-stats">
-                            <span class="stat">📝 Nivel básico</span>
-                            <span class="stat">⏱️ 50 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card" onclick="showContent('tablas')">
-                    <div class="course-header">
-                        <div class="course-icon">📊</div>
-                        <h3 class="course-title">Tablas de Verdad</h3>
-                        <p class="course-subtitle">Lógica proposicional</p>
-                    </div>
-                    <div class="course-body">
-                        <p class="course-description">
-                            Compuertas lógicas básicas, construcción de tablas de verdad y
-                            expresiones booleanas fundamentales.
-                        </p>
-                        <div class="course-stats">
-                            <span class="stat">📝 Nivel intermedio</span>
-                            <span class="stat">⏱️ 55 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="course-card" onclick="showContent('karnaugh')">
-                    <div class="course-header">
-                        <div class="course-icon">🗺️</div>
-                        <h3 class="course-title">Mapas de Karnaugh</h3>
-                        <p class="course-subtitle">Simplificación lógica</p>
-                    </div>
-                    <div class="course-body">
-                        <p class="course-description">
-                            Técnica gráfica para simplificar funciones booleanas.
-                            Método sistemático para optimizar circuitos digitales.
-                        </p>
-                        <div class="course-stats">
-                            <span class="stat">📝 Nivel avanzado</span>
-                            <span class="stat">⏱️ 90 min</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- TABLAS -->
+    <div id="tablas-view" class="content-detail">
+        <div class="breadcrumb"><a onclick="showHome()">Inicio</a><span class="breadcrumb-separator">/</span><span>Tablas de Verdad</span></div>
+        <div class="content-header">
+            <div class="content-meta"><span class="meta-badge">📊 Lógica Digital</span><span class="meta-badge">📝 Nivel Intermedio</span></div>
+            <h1>Tablas de Verdad y Lógica Booleana</h1>
+            <p class="description">Compuertas lógicas básicas y expresiones booleanas</p>
+        </div>
+        <div class="content-section">
+            <h2>Compuertas Lógicas</h2>
+            <h3>AND — Y = A·B</h3>
+            <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></table>
+            <h3>OR — Y = A+B</h3>
+            <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></table>
+            <h3>NOT — Y = Ā</h3>
+            <table><tr><th>A</th><th>Y</th></tr><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></table>
+            <h3>XOR — Y = A⊕B</h3>
+            <table><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+            <h2>Leyes de De Morgan</h2>
+            <div class="formula-box"><div class="formula">(A·B)̄ = Ā + B̄</div><div class="formula">(A+B)̄ = Ā · B̄</div></div>
+            <div class="example-box">
+                <div class="example-title">📌 Tabla completa — Y = (A·B) + (Ā·C)</div>
+                <table><tr><th>A</th><th>B</th><th>C</th><th>A·B</th><th>Ā·C</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td></tr><tr><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td></tr></table>
             </div>
         </div>
+        <button class="back-button" onclick="showHome()">← Volver al inicio</button>
+    </div>
 
-        <!-- Content Detail Views -->
-        <div id="energia-view" class="content-detail">
-            <div class="breadcrumb">
-                <a href="#" onclick="showHome()">Inicio</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Energía Eléctrica</span>
-            </div>
-
-            <div class="content-header">
-                <div class="content-meta">
-                    <span class="meta-badge">⚡ Conceptos Fundamentales</span>
-                    <span class="meta-badge">📝 Nivel Básico</span>
-                </div>
-                <h1>Energía Eléctrica</h1>
-                <p class="description">Fundamentos de la electricidad y sus magnitudes básicas</p>
-            </div>
-
-            <div class="content-section">
-                <h2>¿Qué es la Energía Eléctrica?</h2>
-                <p>
-                    La energía eléctrica es una forma de energía basada en la generación de diferencias
-                    de potencial eléctrico entre dos puntos, permitiendo el flujo de electrones a través
-                    de un conductor. Es una de las formas de energía más utilizadas en la actualidad debido
-                    a su facilidad de transporte y transformación.
-                </p>
-
-                <h3>Magnitudes Eléctricas Fundamentales</h3>
-
-                <h3>1. Voltaje (V)</h3>
-                <p>
-                    El voltaje o diferencia de potencial es la presión eléctrica que impulsa a los
-                    electrones a moverse a través de un conductor. Se mide en Voltios (V).
-                </p>
-                <div class="formula-box">
-                    <p>Unidad: Voltios (V)</p>
-                    <div class="formula">V = W / Q</div>
-                    <p>Donde W es trabajo y Q es carga</p>
-                </div>
-
-                <h3>2. Corriente Eléctrica (I)</h3>
-                <p>
-                    La corriente eléctrica es el flujo de carga eléctrica que circula por un conductor
-                    en un tiempo determinado. Se mide en Amperios (A).
-                </p>
-                <div class="formula-box">
-                    <p>Unidad: Amperios (A)</p>
-                    <div class="formula">I = Q / t</div>
-                    <p>Donde Q es carga y t es tiempo</p>
-                </div>
-
-                <div class="info-box">
-                    <div class="info-title">💡 Tipos de Corriente</div>
-                    <p><strong>Corriente Continua (DC):</strong> Flujo constante en una dirección (baterías, pilas)</p>
-                    <p><strong>Corriente Alterna (AC):</strong> Flujo que cambia de dirección periódicamente (red
-                        eléctrica)</p>
-                </div>
-
-                <h3>3. Resistencia Eléctrica (R)</h3>
-                <p>
-                    La resistencia es la oposición que presenta un material al paso de la corriente
-                    eléctrica. Se mide en Ohmios (Ω).
-                </p>
-                <div class="formula-box">
-                    <p>Unidad: Ohmios (Ω)</p>
-                    <div class="formula">R = ρ × (L / A)</div>
-                    <p>Donde ρ es resistividad, L longitud y A área</p>
-                </div>
-
-                <h3>4. Potencia Eléctrica (P)</h3>
-                <p>
-                    La potencia eléctrica es la cantidad de energía entregada o absorbida por un
-                    elemento en un tiempo determinado. Se mide en Watts (W).
-                </p>
-                <div class="formula-box">
-                    <p>Unidad: Watts (W)</p>
-                    <div class="formula">P = V × I</div>
-                    <p>También: P = I² × R = V² / R</p>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo Práctico</div>
-                    <p>
-                        Si una lámpara opera a 120V y consume 0.5A de corriente, ¿cuál es su potencia?
-                    </p>
-                    <p><strong>Solución:</strong></p>
-                    <p>P = V × I = 120V × 0.5A = 60W</p>
-                    <p>La lámpara consume 60 Watts de potencia.</p>
-                </div>
-
-                <h3>Tabla Resumen de Magnitudes</h3>
-                <table>
-                    <tr>
-                        <th>Magnitud</th>
-                        <th>Símbolo</th>
-                        <th>Unidad</th>
-                        <th>Descripción</th>
-                    </tr>
-                    <tr>
-                        <td>Voltaje</td>
-                        <td>V</td>
-                        <td>Voltios (V)</td>
-                        <td>Diferencia de potencial</td>
-                    </tr>
-                    <tr>
-                        <td>Corriente</td>
-                        <td>I</td>
-                        <td>Amperios (A)</td>
-                        <td>Flujo de carga</td>
-                    </tr>
-                    <tr>
-                        <td>Resistencia</td>
-                        <td>R</td>
-                        <td>Ohmios (Ω)</td>
-                        <td>Oposición al flujo</td>
-                    </tr>
-                    <tr>
-                        <td>Potencia</td>
-                        <td>P</td>
-                        <td>Watts (W)</td>
-                        <td>Energía por tiempo</td>
-                    </tr>
-                </table>
-            </div>
-
-            <a href="#" class="back-button" onclick="showHome()">
-                ← Volver al inicio
-            </a>
+    <!-- KARNAUGH -->
+    <div id="karnaugh-view" class="content-detail">
+        <div class="breadcrumb"><a onclick="showHome()">Inicio</a><span class="breadcrumb-separator">/</span><span>Mapas de Karnaugh</span></div>
+        <div class="content-header">
+            <div class="content-meta"><span class="meta-badge">🗺️ Simplificación</span><span class="meta-badge">📝 Nivel Avanzado</span></div>
+            <h1>Mapas de Karnaugh</h1>
+            <p class="description">Método gráfico para simplificar funciones booleanas</p>
         </div>
-
-        <!-- Leyes Básicas View -->
-        <div id="leyes-view" class="content-detail">
-            <div class="breadcrumb">
-                <a href="#" onclick="showHome()">Inicio</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Leyes Básicas</span>
+        <div class="content-section">
+            <h2>¿Qué son los Mapas de Karnaugh?</h2>
+            <p>Herramienta gráfica para minimizar funciones lógicas de forma sistemática y visual, reduciendo el número de compuertas en un circuito digital.</p>
+            <h3>Mapa de 3 Variables</h3>
+            <table style="max-width:500px;margin:20px auto;"><tr><th></th><th>BC=00</th><th>BC=01</th><th>BC=11</th><th>BC=10</th></tr><tr><th>A=0</th><td style="background:rgba(0,102,255,0.1)">0</td><td style="background:rgba(0,102,255,0.1)">1</td><td style="background:rgba(0,102,255,0.1)">3</td><td style="background:rgba(0,102,255,0.1)">2</td></tr><tr><th>A=1</th><td style="background:rgba(0,102,255,0.1)">4</td><td style="background:rgba(0,102,255,0.1)">5</td><td style="background:rgba(0,102,255,0.1)">7</td><td style="background:rgba(0,102,255,0.1)">6</td></tr></table>
+            <div class="info-box"><div class="info-title">⚠️ Código Gray</div><p>Las columnas siguen el código Gray (00, 01, 11, 10) — solo cambia 1 bit entre celdas adyacentes.</p></div>
+            <h2>Reglas de Agrupación</h2>
+            <ul><li>Grupos rectangulares de potencias de 2 (1, 2, 4, 8…)</li><li>Grupos lo más grandes posible</li><li>Pueden solaparse y "envolver" los bordes</li><li>Todos los 1's deben quedar cubiertos</li></ul>
+            <div class="example-box">
+                <div class="example-title">📌 Ejemplo: F(A,B,C) = Σm(0,2,5,6,7)</div>
+                <table style="max-width:500px;margin:16px auto;"><tr><th></th><th>BC=00</th><th>BC=01</th><th>BC=11</th><th>BC=10</th></tr><tr><th>A=0</th><td style="background:rgba(0,217,163,0.3);font-weight:bold">1</td><td>0</td><td>0</td><td style="background:rgba(0,102,255,0.3);font-weight:bold">1</td></tr><tr><th>A=1</th><td>0</td><td style="background:rgba(255,149,0,0.3);font-weight:bold">1</td><td style="background:rgba(255,149,0,0.3);font-weight:bold">1</td><td style="background:rgba(0,102,255,0.3);font-weight:bold">1</td></tr></table>
+                <p>🟢 m0 → ĀB̄C̄ &nbsp;|&nbsp; 🔵 m2,m6 → BC̄ &nbsp;|&nbsp; 🟠 m5,m7 → AC</p>
+                <div class="formula-box"><div class="formula">F = ĀB̄C̄ + BC̄ + AC</div></div>
             </div>
-
-            <div class="content-header">
-                <div class="content-meta">
-                    <span class="meta-badge">📚 Leyes Fundamentales</span>
-                    <span class="meta-badge">📝 Nivel Intermedio</span>
-                </div>
-                <h1>Leyes Básicas de la Electricidad</h1>
-                <p class="description">Principios fundamentales que rigen el comportamiento de los circuitos eléctricos
-                </p>
-            </div>
-
-            <div class="content-section">
-                <h2>Ley de Ohm</h2>
-                <p>
-                    La Ley de Ohm establece la relación entre voltaje, corriente y resistencia en un
-                    circuito eléctrico. Es una de las leyes más fundamentales en electrónica.
-                </p>
-
-                <div class="formula-box">
-                    <p>Ley de Ohm</p>
-                    <div class="formula">V = I × R</div>
-                    <p>El voltaje es igual al producto de la corriente por la resistencia</p>
-                </div>
-
-                <p>
-                    De esta ecuación fundamental se pueden derivar:
-                </p>
-                <ul>
-                    <li>I = V / R (Corriente es voltaje dividido resistencia)</li>
-                    <li>R = V / I (Resistencia es voltaje dividido corriente)</li>
-                </ul>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Ley de Ohm</div>
-                    <p>
-                        Un resistor de 100Ω está conectado a una fuente de 12V. ¿Cuál es la corriente que circula?
-                    </p>
-                    <p><strong>Solución:</strong></p>
-                    <p>I = V / R = 12V / 100Ω = 0.12A = 120mA</p>
-                </div>
-
-                <h2>Leyes de Kirchhoff</h2>
-                <p>
-                    Las leyes de Kirchhoff son dos principios fundamentales para el análisis de circuitos
-                    eléctricos complejos.
-                </p>
-
-                <h3>Primera Ley de Kirchhoff (Ley de Corrientes)</h3>
-                <p>
-                    También conocida como Ley de Nodos, establece que la suma algebraica de todas las
-                    corrientes que entran a un nodo es igual a cero.
-                </p>
-
-                <div class="formula-box">
-                    <p>Ley de Corrientes de Kirchhoff (KCL)</p>
-                    <div class="formula">∑ I = 0</div>
-                    <p>La suma de corrientes que entran = suma de corrientes que salen</p>
-                </div>
-
-                <div class="info-box">
-                    <div class="info-title">💡 Principio de Conservación</div>
-                    <p>
-                        Esta ley se basa en el principio de conservación de la carga eléctrica.
-                        La carga no se crea ni se destruye en un nodo.
-                    </p>
-                </div>
-
-                <h3>Segunda Ley de Kirchhoff (Ley de Voltajes)</h3>
-                <p>
-                    También conocida como Ley de Mallas, establece que la suma algebraica de todos
-                    los voltajes alrededor de cualquier trayectoria cerrada es igual a cero.
-                </p>
-
-                <div class="formula-box">
-                    <p>Ley de Voltajes de Kirchhoff (KVL)</p>
-                    <div class="formula">∑ V = 0</div>
-                    <p>La suma de caídas de voltaje = suma de elevaciones de voltaje</p>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Ley de Voltajes</div>
-                    <p>
-                        En un circuito en serie con una fuente de 24V y tres resistores que producen
-                        caídas de 8V, 10V y 6V respectivamente.
-                    </p>
-                    <p><strong>Verificación:</strong></p>
-                    <p>24V - 8V - 10V - 6V = 0 ✓</p>
-                </div>
-
-                <h2>Ley de Watt</h2>
-                <p>
-                    La Ley de Watt relaciona la potencia eléctrica con el voltaje y la corriente.
-                </p>
-
-                <div class="formula-box">
-                    <p>Ley de Watt</p>
-                    <div class="formula">P = V × I</div>
-                    <p>También: P = I² × R = V² / R</p>
-                </div>
-
-                <h3>Tabla de Fórmulas Derivadas</h3>
-                <table>
-                    <tr>
-                        <th>Si conoces</th>
-                        <th>Fórmula para P</th>
-                        <th>Fórmula para V</th>
-                        <th>Fórmula para I</th>
-                        <th>Fórmula para R</th>
-                    </tr>
-                    <tr>
-                        <td>V, I</td>
-                        <td>P = V × I</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>R = V / I</td>
-                    </tr>
-                    <tr>
-                        <td>I, R</td>
-                        <td>P = I² × R</td>
-                        <td>V = I × R</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr>
-                    <tr>
-                        <td>V, R</td>
-                        <td>P = V² / R</td>
-                        <td>-</td>
-                        <td>I = V / R</td>
-                        <td>-</td>
-                    </tr>
-                </table>
-            </div>
-
-            <a href="#" class="back-button" onclick="showHome()">
-                ← Volver al inicio
-            </a>
+            <div class="info-box"><div class="info-title">💡 Consejos</div><ul><li>Busca siempre los grupos más grandes primero</li><li>Aprovecha las condiciones "don't care" (X) para agrandar grupos</li><li>Minimiza el número total de grupos</li></ul></div>
         </div>
-
-        <!-- Circuitos View -->
-        <div id="circuitos-view" class="content-detail">
-            <div class="breadcrumb">
-                <a href="#" onclick="showHome()">Inicio</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Análisis de Circuitos</span>
-            </div>
-
-            <div class="content-header">
-                <div class="content-meta">
-                    <span class="meta-badge">🔌 Análisis de Circuitos</span>
-                    <span class="meta-badge">📝 Nivel Intermedio</span>
-                </div>
-                <h1>Análisis de Circuitos</h1>
-                <p class="description">Métodos de análisis para circuitos en serie, paralelo y mixtos</p>
-            </div>
-
-            <div class="content-section">
-                <h2>Circuitos en Serie</h2>
-                <p>
-                    En un circuito en serie, los componentes están conectados uno después del otro,
-                    formando una única trayectoria para el flujo de corriente.
-                </p>
-
-                <h3>Características de Circuitos en Serie</h3>
-                <ul>
-                    <li>La corriente es la misma en todos los componentes</li>
-                    <li>El voltaje total se divide entre los componentes</li>
-                    <li>La resistencia total es la suma de todas las resistencias</li>
-                </ul>
-
-                <div class="formula-box">
-                    <p>Resistencia Total en Serie</p>
-                    <div class="formula">R<sub>total</sub> = R₁ + R₂ + R₃ + ... + Rₙ</div>
-                </div>
-
-                <div class="formula-box">
-                    <p>Voltaje en Serie</p>
-                    <div class="formula">V<sub>total</sub> = V₁ + V₂ + V₃ + ... + Vₙ</div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Circuito en Serie</div>
-                    <p>
-                        Tres resistores de 10Ω, 20Ω y 30Ω conectados en serie a una fuente de 120V.
-                    </p>
-                    <p><strong>Solución:</strong></p>
-                    <p>R<sub>total</sub> = 10Ω + 20Ω + 30Ω = 60Ω</p>
-                    <p>I = V / R<sub>total</sub> = 120V / 60Ω = 2A</p>
-                    <p>V₁ = I × R₁ = 2A × 10Ω = 20V</p>
-                    <p>V₂ = I × R₂ = 2A × 20Ω = 40V</p>
-                    <p>V₃ = I × R₃ = 2A × 30Ω = 60V</p>
-                    <p>Verificación: 20V + 40V + 60V = 120V ✓</p>
-                </div>
-
-                <h2>Circuitos en Paralelo</h2>
-                <p>
-                    En un circuito en paralelo, los componentes están conectados entre los mismos
-                    dos puntos, proporcionando múltiples trayectorias para la corriente.
-                </p>
-
-                <h3>Características de Circuitos en Paralelo</h3>
-                <ul>
-                    <li>El voltaje es el mismo en todos los componentes</li>
-                    <li>La corriente total se divide entre las ramas</li>
-                    <li>La resistencia total es menor que la menor de las resistencias</li>
-                </ul>
-
-                <div class="formula-box">
-                    <p>Resistencia Total en Paralelo</p>
-                    <div class="formula">1/R<sub>total</sub> = 1/R₁ + 1/R₂ + 1/R₃ + ... + 1/Rₙ</div>
-                    <p>Para dos resistores: R<sub>total</sub> = (R₁ × R₂) / (R₁ + R₂)</p>
-                </div>
-
-                <div class="formula-box">
-                    <p>Corriente en Paralelo</p>
-                    <div class="formula">I<sub>total</sub> = I₁ + I₂ + I₃ + ... + Iₙ</div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Circuito en Paralelo</div>
-                    <p>
-                        Tres resistores de 12Ω, 6Ω y 4Ω conectados en paralelo a 12V.
-                    </p>
-                    <p><strong>Solución:</strong></p>
-                    <p>I₁ = V / R₁ = 12V / 12Ω = 1A</p>
-                    <p>I₂ = V / R₂ = 12V / 6Ω = 2A</p>
-                    <p>I₃ = V / R₃ = 12V / 4Ω = 3A</p>
-                    <p>I<sub>total</sub> = 1A + 2A + 3A = 6A</p>
-                    <p>R<sub>total</sub> = V / I<sub>total</sub> = 12V / 6A = 2Ω</p>
-                </div>
-
-                <h2>Circuitos Mixtos</h2>
-                <p>
-                    Los circuitos mixtos combinan configuraciones en serie y en paralelo.
-                    Para analizarlos:
-                </p>
-                <ol>
-                    <li>Identificar las secciones en serie y en paralelo</li>
-                    <li>Simplificar las secciones en paralelo primero</li>
-                    <li>Combinar las resistencias equivalentes en serie</li>
-                    <li>Calcular corrientes y voltajes usando las leyes básicas</li>
-                </ol>
-
-                <div class="info-box">
-                    <div class="info-title">💡 Estrategia de Análisis</div>
-                    <p>
-                        Siempre comienza simplificando desde las ramas más alejadas de la fuente
-                        hacia la fuente misma. Reduce el circuito paso a paso hasta obtener una
-                        resistencia equivalente total.
-                    </p>
-                </div>
-
-                <h3>Divisor de Voltaje</h3>
-                <p>
-                    En un circuito en serie, el voltaje en cada resistor puede calcularse usando
-                    la regla del divisor de voltaje:
-                </p>
-
-                <div class="formula-box">
-                    <p>Divisor de Voltaje</p>
-                    <div class="formula">V<sub>R</sub> = V<sub>total</sub> × (R / R<sub>total</sub>)</div>
-                </div>
-
-                <h3>Divisor de Corriente</h3>
-                <p>
-                    En un circuito en paralelo, la corriente en cada rama puede calcularse usando
-                    la regla del divisor de corriente:
-                </p>
-
-                <div class="formula-box">
-                    <p>Divisor de Corriente (dos resistores)</p>
-                    <div class="formula">I₁ = I<sub>total</sub> × (R₂ / (R₁ + R₂))</div>
-                </div>
-            </div>
-
-            <a href="#" class="back-button" onclick="showHome()">
-                ← Volver al inicio
-            </a>
-        </div>
-
-        <!-- Sistema Binario View -->
-        <div id="binario-view" class="content-detail">
-            <div class="breadcrumb">
-                <a href="#" onclick="showHome()">Inicio</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Sistema Binario</span>
-            </div>
-
-            <div class="content-header">
-                <div class="content-meta">
-                    <span class="meta-badge">💻 Sistemas Digitales</span>
-                    <span class="meta-badge">📝 Nivel Básico</span>
-                </div>
-                <h1>Sistema de Numeración Binario</h1>
-                <p class="description">Fundamentos del sistema binario y conversiones entre sistemas numéricos</p>
-            </div>
-
-            <div class="content-section">
-                <h2>¿Qué es el Sistema Binario?</h2>
-                <p>
-                    El sistema binario es un sistema de numeración en base 2, que utiliza únicamente
-                    dos dígitos: 0 y 1. Es el sistema fundamental utilizado por las computadoras y
-                    sistemas digitales para procesar y almacenar información.
-                </p>
-
-                <h3>Sistemas de Numeración Comunes</h3>
-                <table>
-                    <tr>
-                        <th>Sistema</th>
-                        <th>Base</th>
-                        <th>Dígitos</th>
-                        <th>Uso</th>
-                    </tr>
-                    <tr>
-                        <td>Decimal</td>
-                        <td>10</td>
-                        <td>0-9</td>
-                        <td>Sistema cotidiano</td>
-                    </tr>
-                    <tr>
-                        <td>Binario</td>
-                        <td>2</td>
-                        <td>0, 1</td>
-                        <td>Computadoras digitales</td>
-                    </tr>
-                    <tr>
-                        <td>Octal</td>
-                        <td>8</td>
-                        <td>0-7</td>
-                        <td>Programación antigua</td>
-                    </tr>
-                    <tr>
-                        <td>Hexadecimal</td>
-                        <td>16</td>
-                        <td>0-9, A-F</td>
-                        <td>Direcciones de memoria</td>
-                    </tr>
-                </table>
-
-                <h2>Conversión Decimal a Binario</h2>
-                <p>
-                    Para convertir un número decimal a binario, se divide sucesivamente entre 2
-                    y se toman los residuos en orden inverso.
-                </p>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Decimal a Binario</div>
-                    <p>Convertir 25₁₀ a binario:</p>
-                    <p>25 ÷ 2 = 12 residuo <strong>1</strong></p>
-                    <p>12 ÷ 2 = 6 residuo <strong>0</strong></p>
-                    <p>6 ÷ 2 = 3 residuo <strong>0</strong></p>
-                    <p>3 ÷ 2 = 1 residuo <strong>1</strong></p>
-                    <p>1 ÷ 2 = 0 residuo <strong>1</strong></p>
-                    <p><strong>Resultado:</strong> 25₁₀ = 11001₂</p>
-                </div>
-
-                <h2>Conversión Binario a Decimal</h2>
-                <p>
-                    Para convertir de binario a decimal, se multiplica cada dígito por la potencia
-                    de 2 correspondiente a su posición y se suman los resultados.
-                </p>
-
-                <div class="formula-box">
-                    <p>Valor Posicional Binario</p>
-                    <div class="formula">Número = d<sub>n</sub>×2ⁿ + d<sub>n-1</sub>×2ⁿ⁻¹ + ... + d₁×2¹ + d₀×2⁰</div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Binario a Decimal</div>
-                    <p>Convertir 11001₂ a decimal:</p>
-                    <table>
-                        <tr>
-                            <th>Posición</th>
-                            <td>4</td>
-                            <td>3</td>
-                            <td>2</td>
-                            <td>1</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>Dígito</th>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <th>Potencia</th>
-                            <td>2⁴=16</td>
-                            <td>2³=8</td>
-                            <td>2²=4</td>
-                            <td>2¹=2</td>
-                            <td>2⁰=1</td>
-                        </tr>
-                        <tr>
-                            <th>Valor</th>
-                            <td>16</td>
-                            <td>8</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                    <p><strong>Resultado:</strong> 16 + 8 + 0 + 0 + 1 = 25₁₀</p>
-                </div>
-
-                <h2>Operaciones Aritméticas Binarias</h2>
-
-                <h3>Suma Binaria</h3>
-                <p>Reglas básicas de la suma binaria:</p>
-                <ul>
-                    <li>0 + 0 = 0</li>
-                    <li>0 + 1 = 1</li>
-                    <li>1 + 0 = 1</li>
-                    <li>1 + 1 = 10 (0 y se acarrea 1)</li>
-                    <li>1 + 1 + 1 = 11 (1 y se acarrea 1)</li>
-                </ul>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Suma Binaria</div>
-                    <p>Sumar 1101₂ + 1011₂:</p>
-                    <pre style="font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); margin: 16px 0;">
-    1101
-  + 1011
-  ------
-   11000
-                    </pre>
-                    <p>Verificación: 13₁₀ + 11₁₀ = 24₁₀ (11000₂ = 24₁₀) ✓</p>
-                </div>
-
-                <h3>Complemento a 2 (Números Negativos)</h3>
-                <p>
-                    Para representar números negativos en binario, se utiliza el complemento a 2:
-                </p>
-                <ol>
-                    <li>Invertir todos los bits (complemento a 1)</li>
-                    <li>Sumar 1 al resultado</li>
-                </ol>
-
-                <div class="info-box">
-                    <div class="info-title">💡 Aplicaciones del Sistema Binario</div>
-                    <p>
-                        El sistema binario es fundamental para: procesamiento digital de información,
-                        almacenamiento de datos, transmisión de señales digitales, lógica de
-                        computadoras, y comunicaciones digitales.
-                    </p>
-                </div>
-
-                <h3>Tabla de Conversión Rápida</h3>
-                <table>
-                    <tr>
-                        <th>Decimal</th>
-                        <th>Binario</th>
-                        <th>Hexadecimal</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>0000</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>0001</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>0010</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>0011</td>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>0100</td>
-                        <td>4</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>0101</td>
-                        <td>5</td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>0110</td>
-                        <td>6</td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>0111</td>
-                        <td>7</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>1000</td>
-                        <td>8</td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td>1001</td>
-                        <td>9</td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>1010</td>
-                        <td>A</td>
-                    </tr>
-                    <tr>
-                        <td>11</td>
-                        <td>1011</td>
-                        <td>B</td>
-                    </tr>
-                    <tr>
-                        <td>12</td>
-                        <td>1100</td>
-                        <td>C</td>
-                    </tr>
-                    <tr>
-                        <td>13</td>
-                        <td>1101</td>
-                        <td>D</td>
-                    </tr>
-                    <tr>
-                        <td>14</td>
-                        <td>1110</td>
-                        <td>E</td>
-                    </tr>
-                    <tr>
-                        <td>15</td>
-                        <td>1111</td>
-                        <td>F</td>
-                    </tr>
-                </table>
-            </div>
-
-            <a href="#" class="back-button" onclick="showHome()">
-                ← Volver al inicio
-            </a>
-        </div>
-
-        <!-- Tablas de Verdad View -->
-        <div id="tablas-view" class="content-detail">
-            <div class="breadcrumb">
-                <a href="#" onclick="showHome()">Inicio</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Tablas de Verdad</span>
-            </div>
-
-            <div class="content-header">
-                <div class="content-meta">
-                    <span class="meta-badge">📊 Lógica Digital</span>
-                    <span class="meta-badge">📝 Nivel Intermedio</span>
-                </div>
-                <h1>Tablas de Verdad y Lógica Booleana</h1>
-                <p class="description">Compuertas lógicas básicas y construcción de expresiones booleanas</p>
-            </div>
-
-            <div class="content-section">
-                <h2>Álgebra Booleana</h2>
-                <p>
-                    El álgebra booleana es un sistema matemático que trabaja con valores binarios
-                    (verdadero/falso, 1/0). Es la base de la lógica digital y los circuitos electrónicos.
-                </p>
-
-                <h3>Variables y Valores</h3>
-                <ul>
-                    <li><strong>1</strong> representa: Verdadero, Encendido, Alto, Sí</li>
-                    <li><strong>0</strong> representa: Falso, Apagado, Bajo, No</li>
-                </ul>
-
-                <h2>Compuertas Lógicas Básicas</h2>
-
-                <h3>Compuerta AND (Y)</h3>
-                <p>
-                    La salida es 1 solo cuando todas las entradas son 1.
-                </p>
-                <div class="formula-box">
-                    <p>Operador AND</p>
-                    <div class="formula">Y = A · B (también A ∧ B)</div>
-                </div>
-
-                <table>
-                    <tr>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>Y = A · B</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                </table>
-
-                <h3>Compuerta OR (O)</h3>
-                <p>
-                    La salida es 1 cuando al menos una entrada es 1.
-                </p>
-                <div class="formula-box">
-                    <p>Operador OR</p>
-                    <div class="formula">Y = A + B (también A ∨ B)</div>
-                </div>
-
-                <table>
-                    <tr>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>Y = A + B</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                </table>
-
-                <h3>Compuerta NOT (NO)</h3>
-                <p>
-                    Invierte la entrada: si la entrada es 1, la salida es 0 y viceversa.
-                </p>
-                <div class="formula-box">
-                    <p>Operador NOT</p>
-                    <div class="formula">Y = Ā (también ¬A o A')</div>
-                </div>
-
-                <table>
-                    <tr>
-                        <th>A</th>
-                        <th>Y = Ā</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                </table>
-
-                <h3>Compuerta NAND (NO-Y)</h3>
-                <p>
-                    Es la negación de AND. La salida es 0 solo cuando todas las entradas son 1.
-                </p>
-
-                <table>
-                    <tr>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>Y = (A · B)̄</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                </table>
-
-                <h3>Compuerta NOR (NO-O)</h3>
-                <p>
-                    Es la negación de OR. La salida es 1 solo cuando todas las entradas son 0.
-                </p>
-
-                <table>
-                    <tr>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>Y = (A + B)̄</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                </table>
-
-                <h3>Compuerta XOR (O-Exclusivo)</h3>
-                <p>
-                    La salida es 1 cuando las entradas son diferentes.
-                </p>
-                <div class="formula-box">
-                    <p>Operador XOR</p>
-                    <div class="formula">Y = A ⊕ B</div>
-                </div>
-
-                <table>
-                    <tr>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>Y = A ⊕ B</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>0</td>
-                    </tr>
-                </table>
-
-                <h2>Leyes del Álgebra Booleana</h2>
-
-                <h3>Leyes Básicas</h3>
-                <table>
-                    <tr>
-                        <th>Ley</th>
-                        <th>AND</th>
-                        <th>OR</th>
-                    </tr>
-                    <tr>
-                        <td>Identidad</td>
-                        <td>A · 1 = A</td>
-                        <td>A + 0 = A</td>
-                    </tr>
-                    <tr>
-                        <td>Nulidad</td>
-                        <td>A · 0 = 0</td>
-                        <td>A + 1 = 1</td>
-                    </tr>
-                    <tr>
-                        <td>Idempotencia</td>
-                        <td>A · A = A</td>
-                        <td>A + A = A</td>
-                    </tr>
-                    <tr>
-                        <td>Complemento</td>
-                        <td>A · Ā = 0</td>
-                        <td>A + Ā = 1</td>
-                    </tr>
-                    <tr>
-                        <td>Doble negación</td>
-                        <td colspan="2">Ā̄ = A</td>
-                    </tr>
-                </table>
-
-                <h3>Leyes de De Morgan</h3>
-                <div class="formula-box">
-                    <p>Leyes de De Morgan</p>
-                    <div class="formula">(A · B)̄ = Ā + B̄</div>
-                    <div class="formula">(A + B)̄ = Ā · B̄</div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - Tabla de Verdad Completa</div>
-                    <p>Construir la tabla de verdad para: Y = (A · B) + (Ā · C)</p>
-                    <table>
-                        <tr>
-                            <th>A</th>
-                            <th>B</th>
-                            <th>C</th>
-                            <th>Ā</th>
-                            <th>A·B</th>
-                            <th>Ā·C</th>
-                            <th>Y=(A·B)+(Ā·C)</th>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="info-box">
-                    <div class="info-title">💡 Aplicaciones Prácticas</div>
-                    <p>
-                        Las tablas de verdad se utilizan para: diseñar circuitos lógicos, verificar
-                        equivalencia de expresiones, simplificar funciones booleanas, analizar
-                        comportamiento de sistemas digitales, y programación de microcontroladores.
-                    </p>
-                </div>
-            </div>
-
-            <a href="#" class="back-button" onclick="showHome()">
-                ← Volver al inicio
-            </a>
-        </div>
-
-        <!-- Mapas de Karnaugh View -->
-        <div id="karnaugh-view" class="content-detail">
-            <div class="breadcrumb">
-                <a href="#" onclick="showHome()">Inicio</a>
-                <span class="breadcrumb-separator">/</span>
-                <span>Mapas de Karnaugh</span>
-            </div>
-
-            <div class="content-header">
-                <div class="content-meta">
-                    <span class="meta-badge">🗺️ Simplificación</span>
-                    <span class="meta-badge">📝 Nivel Avanzado</span>
-                </div>
-                <h1>Mapas de Karnaugh</h1>
-                <p class="description">Método gráfico para simplificar funciones booleanas</p>
-            </div>
-
-            <div class="content-section">
-                <h2>¿Qué son los Mapas de Karnaugh?</h2>
-                <p>
-                    Los mapas de Karnaugh (K-maps) son una herramienta gráfica utilizada para
-                    simplificar expresiones booleanas. Proporcionan un método sistemático y visual
-                    para minimizar funciones lógicas, reduciendo el número de compuertas necesarias
-                    en un circuito digital.
-                </p>
-
-                <h3>Ventajas de los Mapas de Karnaugh</h3>
-                <ul>
-                    <li>Método visual e intuitivo</li>
-                    <li>Garantiza una solución mínima</li>
-                    <li>Reduce errores algebraicos</li>
-                    <li>Fácil de aplicar para 2, 3 y 4 variables</li>
-                    <li>Optimiza el diseño de circuitos digitales</li>
-                </ul>
-
-                <h2>Estructura de los Mapas de Karnaugh</h2>
-
-                <h3>Mapa de 2 Variables (A, B)</h3>
-                <p>Arreglo de 2×2 = 4 celdas</p>
-                <table style="max-width: 300px; margin: 20px auto;">
-                    <tr>
-                        <th></th>
-                        <th>B=0</th>
-                        <th>B=1</th>
-                    </tr>
-                    <tr>
-                        <th>A=0</th>
-                        <td style="background: rgba(0,102,255,0.1);">0</td>
-                        <td style="background: rgba(0,102,255,0.1);">1</td>
-                    </tr>
-                    <tr>
-                        <th>A=1</th>
-                        <td style="background: rgba(0,102,255,0.1);">2</td>
-                        <td style="background: rgba(0,102,255,0.1);">3</td>
-                    </tr>
-                </table>
-
-                <h3>Mapa de 3 Variables (A, B, C)</h3>
-                <p>Arreglo de 2×4 = 8 celdas</p>
-                <table style="max-width: 500px; margin: 20px auto;">
-                    <tr>
-                        <th></th>
-                        <th>BC=00</th>
-                        <th>BC=01</th>
-                        <th>BC=11</th>
-                        <th>BC=10</th>
-                    </tr>
-                    <tr>
-                        <th>A=0</th>
-                        <td style="background: rgba(0,102,255,0.1);">0</td>
-                        <td style="background: rgba(0,102,255,0.1);">1</td>
-                        <td style="background: rgba(0,102,255,0.1);">3</td>
-                        <td style="background: rgba(0,102,255,0.1);">2</td>
-                    </tr>
-                    <tr>
-                        <th>A=1</th>
-                        <td style="background: rgba(0,102,255,0.1);">4</td>
-                        <td style="background: rgba(0,102,255,0.1);">5</td>
-                        <td style="background: rgba(0,102,255,0.1);">7</td>
-                        <td style="background: rgba(0,102,255,0.1);">6</td>
-                    </tr>
-                </table>
-
-                <div class="info-box">
-                    <div class="info-title">⚠️ Código Gray</div>
-                    <p>
-                        Nota que las columnas siguen el código Gray (00, 01, 11, 10), no el orden
-                        binario normal. Esto asegura que solo cambie un bit entre celdas adyacentes.
-                    </p>
-                </div>
-
-                <h3>Mapa de 4 Variables (A, B, C, D)</h3>
-                <p>Arreglo de 4×4 = 16 celdas</p>
-                <table style="max-width: 600px; margin: 20px auto;">
-                    <tr>
-                        <th></th>
-                        <th>CD=00</th>
-                        <th>CD=01</th>
-                        <th>CD=11</th>
-                        <th>CD=10</th>
-                    </tr>
-                    <tr>
-                        <th>AB=00</th>
-                        <td style="background: rgba(0,102,255,0.1);">0</td>
-                        <td style="background: rgba(0,102,255,0.1);">1</td>
-                        <td style="background: rgba(0,102,255,0.1);">3</td>
-                        <td style="background: rgba(0,102,255,0.1);">2</td>
-                    </tr>
-                    <tr>
-                        <th>AB=01</th>
-                        <td style="background: rgba(0,102,255,0.1);">4</td>
-                        <td style="background: rgba(0,102,255,0.1);">5</td>
-                        <td style="background: rgba(0,102,255,0.1);">7</td>
-                        <td style="background: rgba(0,102,255,0.1);">6</td>
-                    </tr>
-                    <tr>
-                        <th>AB=11</th>
-                        <td style="background: rgba(0,102,255,0.1);">12</td>
-                        <td style="background: rgba(0,102,255,0.1);">13</td>
-                        <td style="background: rgba(0,102,255,0.1);">15</td>
-                        <td style="background: rgba(0,102,255,0.1);">14</td>
-                    </tr>
-                    <tr>
-                        <th>AB=10</th>
-                        <td style="background: rgba(0,102,255,0.1);">8</td>
-                        <td style="background: rgba(0,102,255,0.1);">9</td>
-                        <td style="background: rgba(0,102,255,0.1);">11</td>
-                        <td style="background: rgba(0,102,255,0.1);">10</td>
-                    </tr>
-                </table>
-
-                <h2>Procedimiento de Simplificación</h2>
-
-                <h3>Paso 1: Llenar el Mapa</h3>
-                <p>
-                    Coloca 1's en las celdas donde la función es verdadera (mintérminos) y 0's
-                    donde es falsa. Las celdas con X representan condiciones "no importa" (don't care).
-                </p>
-
-                <h3>Paso 2: Agrupar los Unos</h3>
-                <p>Reglas para agrupar:</p>
-                <ul>
-                    <li>Los grupos deben ser rectangulares</li>
-                    <li>Los grupos deben contener potencias de 2 (1, 2, 4, 8, 16 celdas)</li>
-                    <li>Los grupos deben ser lo más grandes posible</li>
-                    <li>Los grupos pueden solaparse</li>
-                    <li>Los grupos pueden "envolver" los bordes del mapa</li>
-                    <li>Todos los 1's deben estar en al menos un grupo</li>
-                </ul>
-
-                <h3>Paso 3: Escribir la Expresión Simplificada</h3>
-                <p>
-                    Para cada grupo, escribe el producto (AND) de las variables que no cambian
-                    dentro del grupo. La expresión final es la suma (OR) de todos estos productos.
-                </p>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo Completo - 3 Variables</div>
-                    <p>Simplificar la función: F(A,B,C) = Σm(0,2,5,6,7)</p>
-
-                    <p><strong>Paso 1: Tabla de Verdad</strong></p>
-                    <table style="max-width: 400px;">
-                        <tr>
-                            <th>A</th>
-                            <th>B</th>
-                            <th>C</th>
-                            <th>F</th>
-                            <th>Mintérmino</th>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>m0</td>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>m2</td>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>m5</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>0</td>
-                            <td>1</td>
-                            <td>m6</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>1</td>
-                            <td>m7</td>
-                        </tr>
-                    </table>
-
-                    <p><strong>Paso 2: Mapa de Karnaugh</strong></p>
-                    <table style="max-width: 500px; margin: 20px auto;">
-                        <tr>
-                            <th></th>
-                            <th>BC=00</th>
-                            <th>BC=01</th>
-                            <th>BC=11</th>
-                            <th>BC=10</th>
-                        </tr>
-                        <tr>
-                            <th>A=0</th>
-                            <td style="background: rgba(0,217,163,0.3); font-weight: bold;">1</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td style="background: rgba(0,102,255,0.3); font-weight: bold;">1</td>
-                        </tr>
-                        <tr>
-                            <th>A=1</th>
-                            <td>0</td>
-                            <td style="background: rgba(255,149,0,0.3); font-weight: bold;">1</td>
-                            <td style="background: rgba(255,149,0,0.3); font-weight: bold;">1</td>
-                            <td style="background: rgba(0,102,255,0.3); font-weight: bold;">1</td>
-                        </tr>
-                    </table>
-
-                    <p><strong>Paso 3: Agrupaciones</strong></p>
-                    <ul>
-                        <li>🟢 Grupo 1 (verde): m0 → ĀB̄C̄</li>
-                        <li>🔵 Grupo 2 (azul): m2, m6 → BC̄</li>
-                        <li>🟠 Grupo 3 (naranja): m5, m7 → AC</li>
-                    </ul>
-
-                    <p><strong>Expresión simplificada:</strong></p>
-                    <div class="formula-box">
-                        <div class="formula">F = ĀB̄C̄ + BC̄ + AC</div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📌 Ejemplo - 4 Variables</div>
-                    <p>Simplificar: F(A,B,C,D) = Σm(0,1,2,5,6,7,8,9,14)</p>
-
-                    <table style="max-width: 600px; margin: 20px auto;">
-                        <tr>
-                            <th></th>
-                            <th>CD=00</th>
-                            <th>CD=01</th>
-                            <th>CD=11</th>
-                            <th>CD=10</th>
-                        </tr>
-                        <tr>
-                            <th>AB=00</th>
-                            <td style="background: rgba(0,217,163,0.3); font-weight: bold;">1</td>
-                            <td style="background: rgba(0,217,163,0.3); font-weight: bold;">1</td>
-                            <td>0</td>
-                            <td style="background: rgba(0,217,163,0.3); font-weight: bold;">1</td>
-                        </tr>
-                        <tr>
-                            <th>AB=01</th>
-                            <td>0</td>
-                            <td style="background: rgba(0,102,255,0.3); font-weight: bold;">1</td>
-                            <td style="background: rgba(0,102,255,0.3); font-weight: bold;">1</td>
-                            <td style="background: rgba(0,102,255,0.3); font-weight: bold;">1</td>
-                        </tr>
-                        <tr>
-                            <th>AB=11</th>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td style="background: rgba(255,149,0,0.3); font-weight: bold;">1</td>
-                        </tr>
-                        <tr>
-                            <th>AB=10</th>
-                            <td style="background: rgba(0,217,163,0.3); font-weight: bold;">1</td>
-                            <td style="background: rgba(0,217,163,0.3); font-weight: bold;">1</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                    </table>
-
-                    <p><strong>Agrupaciones:</strong></p>
-                    <ul>
-                        <li>🟢 Grupo de 4: m0,m1,m8,m9 → B̄C̄</li>
-                        <li>🔵 Grupo de 4: m2,m6,m7 (notese envoltura) → ĀB + B̄D</li>
-                        <li>🟠 Grupo de 2: m6,m14 → BD̄</li>
-                    </ul>
-
-                    <p><strong>Expresión simplificada:</strong></p>
-                    <div class="formula-box">
-                        <div class="formula">F = B̄C̄ + ĀB + BD̄</div>
-                    </div>
-                </div>
-
-                <h2>Términos "No Importa" (Don't Care)</h2>
-                <p>
-                    Las condiciones "don't care" (X) representan combinaciones de entrada que nunca
-                    ocurren o cuya salida no importa. Se pueden usar para crear grupos más grandes
-                    y obtener simplificaciones adicionales.
-                </p>
-
-                <div class="info-box">
-                    <div class="info-title">💡 Consejos Prácticos</div>
-                    <ul>
-                        <li>Siempre busca los grupos más grandes primero</li>
-                        <li>Minimiza el número total de grupos</li>
-                        <li>Los grupos pueden solaparse para cubrir todos los 1's</li>
-                        <li>Aprovecha las condiciones "don't care" para agrandar grupos</li>
-                        <li>Verifica que todos los 1's estén cubiertos</li>
-                    </ul>
-                </div>
-
-                <h3>Aplicaciones de los Mapas de Karnaugh</h3>
-                <ul>
-                    <li>Diseño de circuitos digitales optimizados</li>
-                    <li>Simplificación de controladores lógicos</li>
-                    <li>Diseño de decodificadores y multiplexores</li>
-                    <li>Optimización de sistemas secuenciales</li>
-                    <li>Reducción de costos en implementación de hardware</li>
-                </ul>
-            </div>
-
-            <a href="#" class="back-button" onclick="showHome()">
-                ← Volver al inicio
-            </a>
-        </div>
-    </main>
-
-    <script>
-        function showHome() {
-            // Hide all content details
-            document.querySelectorAll('.content-detail').forEach(el => {
-                el.classList.remove('active');
-            });
-
-            // Show home view
-            document.getElementById('home-view').style.display = 'block';
-
-            // Update navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector('.nav-item[onclick="showHome()"]').classList.add('active');
-
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
-
-        function showContent(contentId) {
-            // Hide home view
-            document.getElementById('home-view').style.display = 'none';
-
-            // Hide all content details
-            document.querySelectorAll('.content-detail').forEach(el => {
-                el.classList.remove('active');
-            });
-
-            // Show selected content
-            document.getElementById(contentId + '-view').classList.add('active');
-
-            // Update navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            document.querySelector('.nav-item[onclick="showContent(\'' + contentId + '\')"]').classList.add('active');
-
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
-
-        // Toggle Sidebar
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const toggleBtn = document.querySelector('.toggle-btn');
-            sidebar.classList.toggle('collapsed');
-
-            if (sidebar.classList.contains('collapsed')) {
-                toggleBtn.innerHTML = '▶';
-                toggleBtn.title = 'Expandir menú';
-            } else {
-                toggleBtn.innerHTML = '◀';
-                toggleBtn.title = 'Colapsar menú';
-            }
-            // Guardar preferencia
-            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-        }
-
-        // Settings Modal
-        function openSettings() {
-            document.getElementById('settingsModal').classList.add('active');
-        }
-
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.remove('active');
-        }
-
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('settingsModal').addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeSettings();
-            }
+        <button class="back-button" onclick="showHome()">← Volver al inicio</button>
+    </div>
+
+</main>
+
+<script>
+    // ── NAVIGATION ──────────────────────────────────────────────
+    function showHome() {
+        document.querySelectorAll('.content-detail').forEach(el => el.classList.remove('active'));
+        document.getElementById('home-view').style.display = 'block';
+        setActiveNav('home');
+        window.scrollTo(0, 0);
+    }
+
+    function showContent(id) {
+        document.getElementById('home-view').style.display = 'none';
+        document.querySelectorAll('.content-detail').forEach(el => el.classList.remove('active'));
+        const view = document.getElementById(id + '-view');
+        if (view) view.classList.add('active');
+        setActiveNav(id);
+        window.scrollTo(0, 0);
+        // Close mobile sidebar
+        document.getElementById('sidebar').classList.remove('mobile-open');
+    }
+
+    function setActiveNav(id) {
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        const map = {
+            home:      0,
+            energia:   1,
+            leyes:     2,
+            circuitos: 3,
+            binario:   4,
+            tablas:    5,
+            karnaugh:  6
+        };
+        const items = document.querySelectorAll('.nav-item');
+        if (items[map[id]]) items[map[id]].classList.add('active');
+    }
+
+    // ── SIDEBAR TOGGLE ───────────────────────────────────────────
+    function toggleSidebar() {
+        const body = document.body;
+        const btn  = document.getElementById('toggleBtn');
+        const collapsed = body.classList.toggle('sidebar-collapsed');
+        btn.innerHTML   = collapsed ? '▶' : '◀';
+        btn.title       = collapsed ? 'Expandir menú' : 'Colapsar menú';
+        localStorage.setItem('sidebarCollapsed', collapsed);
+    }
+
+    // ── MOBILE MENU ──────────────────────────────────────────────
+    function toggleMobileMenu() {
+        document.getElementById('sidebar').classList.toggle('mobile-open');
+    }
+
+    // ── SETTINGS ────────────────────────────────────────────────
+    function openSettings()  { document.getElementById('settingsModal').classList.add('active'); }
+    function closeSettings() { document.getElementById('settingsModal').classList.remove('active'); }
+
+    document.getElementById('settingsModal').addEventListener('click', function(e) {
+        if (e.target === this) closeSettings();
+    });
+
+    function setSidebarPosition(pos) {
+        const body = document.body;
+        document.querySelectorAll('input[name="sidebar-position"]').forEach(opt => {
+            const label = opt.closest('.setting-option');
+            label.classList.toggle('active', opt.value === pos);
+            opt.checked = opt.value === pos;
         });
+        body.classList.toggle('sidebar-right', pos === 'right');
+        localStorage.setItem('sidebarPosition', pos);
+    }
 
-        // Posición del Sidebar
-        function setSidebarPosition(position) {
-            const body = document.body;
-            const options = document.querySelectorAll('input[name="sidebar-position"]');
-
-            // Actualizar UI
-            options.forEach(opt => {
-                opt.closest('.setting-option').classList.remove('active');
-                if (opt.value === position) {
-                    opt.checked = true;
-                    opt.closest('.setting-option').classList.add('active');
-                }
-            });
-
-            // Aplicar posición
-            if (position === 'right') {
-                body.classList.add('sidebar-right');
-            } else {
-                body.classList.remove('sidebar-right');
-            }
-
-            // Guardar preferencia
-            localStorage.setItem('sidebarPosition', position);
-        }
-
-        // Modo de Color (Daltonismo)
-        function setColorMode(mode) {
-            const body = document.body;
-            const options = document.querySelectorAll('input[name="color-mode"]');
-            const colorModes = ['protanopia', 'deuteranopia', 'tritanopia', 'high-contrast'];
-
-            // Remover todos los modos
-            colorModes.forEach(m => body.classList.remove(m));
-
-            // Actualizar UI
-            options.forEach(opt => {
-                opt.closest('.setting-option').classList.remove('active');
-                if (opt.value === mode) {
-                    opt.checked = true;
-                    opt.closest('.setting-option').classList.add('active');
-                }
-            });
-
-            // Aplicar modo (excepto normal)
-            if (mode !== 'normal') {
-                body.classList.add(mode);
-            }
-
-            // Guardar preferencia
-            localStorage.setItem('colorMode', mode);
-        }
-
-        // Cargar preferencias guardadas
-        function loadSettings() {
-            // Sidebar collapsed
-            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-            if (sidebarCollapsed) {
-                toggleSidebar();
-            }
-
-            // Sidebar position
-            const sidebarPosition = localStorage.getItem('sidebarPosition') || 'left';
-            setSidebarPosition(sidebarPosition);
-
-            // Color mode
-            const colorMode = localStorage.getItem('colorMode') || 'normal';
-            setColorMode(colorMode);
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function () {
-            showHome();
-            loadSettings();
+    function setColorMode(mode) {
+        const body = document.body;
+        const modes = ['protanopia','deuteranopia','tritanopia','high-contrast'];
+        modes.forEach(m => body.classList.remove(m));
+        document.querySelectorAll('input[name="color-mode"]').forEach(opt => {
+            const label = opt.closest('.setting-option');
+            label.classList.toggle('active', opt.value === mode);
+            opt.checked = opt.value === mode;
         });
-    </script>
+        if (mode !== 'normal') body.classList.add(mode);
+        localStorage.setItem('colorMode', mode);
+    }
+
+    // ── LOAD SAVED SETTINGS ──────────────────────────────────────
+    function loadSettings() {
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+            document.getElementById('toggleBtn').innerHTML = '▶';
+        }
+        setSidebarPosition(localStorage.getItem('sidebarPosition') || 'left');
+        setColorMode(localStorage.getItem('colorMode') || 'normal');
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+        showHome();
+        loadSettings();
+    });
+</script>
 </body>
-
 </html>
